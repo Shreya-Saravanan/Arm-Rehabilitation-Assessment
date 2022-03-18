@@ -83,7 +83,7 @@ def pred_video(video_file):
 
 @app.route('/')
 def upload_form():
-    return render_template('upload.html')
+    return render_template('Upload1.html')
 
 
 @app.route('/', methods = ['POST'])
@@ -108,13 +108,13 @@ def upload_video():
         duration = mp.VideoFileClip(fileName).duration
 
         ffmpeg_extract_subclip(
-            fileName, 0, (duration - 10), targetname=targetName)
+            fileName, 0, (duration - 10), targetname = targetName)
 
         pred = pred_video(os.path.join(
             app.config['UPLOAD_FOLDER'], targetName))
         flash(pred)
 
-        return render_template('upload.html', filename=targetName)
+        return render_template('Upload1.html', filename = targetName)
 
 
 @app.route('/display/<filename>')

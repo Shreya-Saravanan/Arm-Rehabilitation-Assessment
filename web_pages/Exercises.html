@@ -1,151 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  
+
   <title>Exercises</title>
-  
+
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.
-  css">
-  
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  
+
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  
+
   <link href="{{ url_for('static', filename='css/Exercise.css') }}" rel="stylesheet">
-  
+
 </head>
 
 <body>
-  
-<div class="topnav" id="myTopnav">
-  <h1 style="color:#178DBB"/> Arm Rehabilitation Exercises
-  <a href="About.html">About</a>
 
-  <div class="dropdown">
-    <button class="dropbtn"><a href="Exercises.html"/>Exercises
-      <i class="fa fa-caret-down"></i>
-    </button>
-    
-    <div class="dropdown-content">
-      <a href="Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
-      <a href="Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
-      <a href="Extending_the_Elbow_1.html">Extending the Elbow - 1</a>
-      <a href="Extending_the_Elbow_2.html">Extending the Elbow - 2</a>
-      <a href="Turning_the_Forearm.html">Turning the Forearm</a>
-      <a href="Extending_the_Wrist.html">Extending the Wrist</a>
-      <a href="Extending_the_Fingers.html">Extending the Fingers</a>
-      <a href="Extending_the_Thumb.html">Extending the Thumb</a>
-    </div>
-  </div>
+  <div class="topnav" id="myTopnav">
+    <h1 style="color:#178DBB" /> Arm Rehabilitation Exercises
+    <a href="/display/About.html">About</a>
 
-  <a href="Home.html" class="active">Home</a>
-  
-</div>
+    <div class="dropdown">
+      <button class="dropbtn"><a href="/display/Exercises.html" />Exercises
+        <i class="fa fa-caret-down"></i>
+      </button>
 
-<!-- Exercise List Image Carousel -->
-
-<div class="container">
-  <h1 style="color:#226e93; text-align: center"/>Exercise List
-  
-  <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-      <li data-target="#myCarousel" data-slide-to="1"></li>
-      <li data-target="#myCarousel" data-slide-to="2"></li>
-      <li data-target="#myCarousel" data-slide-to="3"></li>
-      <li data-target="#myCarousel" data-slide-to="4"></li>
-      <li data-target="#myCarousel" data-slide-to="5"></li>
-      <li data-target="#myCarousel" data-slide-to="6"></li>
-      <li data-target="#myCarousel" data-slide-to="7"></li>
-    </ol>
-
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-
-      <div class="item active">
-        <a href="Arm_Placed_in_the_Front.html"/><img src="{{ url_for('static', filename='images/1.png')}}" alt="Arm Placed in the Front" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Arm_Placed_in_the_Front.html"/>Arm Placed in the Front</p>
-        </div>
+      <div class="dropdown-content">
+        <a href="/display/Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
+        <a href="/display/Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
+        <a href="/display/Extending_the_Elbow_1.html">Extending the Elbow - 1</a>
+        <a href="/display/Extending_the_Elbow_2.html">Extending the Elbow - 2</a>
+        <a href="/display/Turning_the_Forearm.html">Turning the Forearm</a>
+        <a href="/display/Extending_the_Wrist.html">Extending the Wrist</a>
+        <a href="/display/Extending_the_Fingers.html">Extending the Fingers</a>
+        <a href="/display/Extending_the_Thumb.html">Extending the Thumb</a>
       </div>
-
-      <div class="item">
-        <a href="Arm_Placed_on_its_Side.html"/><img src="{{ url_for('static', filename='images/2.png')}}" alt="Arm Placed on its Side" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Arm_Placed_on_its_Side.html"/>Arm Placed on its Side</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <a href="Extending_the_Elbow_1.html"/><img src="{{ url_for('static', filename='images/4.png')}}" alt="Extending the Elbow - 1" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Extending_the_Elbow_1.html"/>Extending the Elbow - 1</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <a href="Extending_the_Elbow_2.html"/><img src="{{ url_for('static', filename='images/5.png')}}" alt="Extending the Elbow - 2" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Extending_the_Elbow_2.html"/>Extending the Elbow - 2</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <a href="Turning_the_Forearm.html"/><img src="{{ url_for('static', filename='images/6.png')}}" alt="Turning the Forearm" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Turning_the_Forearm.html"/>Turning the Forearm</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <a href="Extending_the_Wrist.html"/><img src="{{ url_for('static', filename='images/7.png')}}" alt="Extending the Wrist" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Extending_the_Wrist.html"/>Extending the Wrist</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <a href="Extending_the_Fingers.html"/><img src="{{ url_for('static', filename='images/8.png')}}" alt="Extending the Fingers" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Extending_the_Fingers.html"/>Extending the Fingers</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <a href="Extending_the_Thumb.html"/><img src="{{ url_for('static', filename='images/9.png')}}" alt="Extending the Thumb" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>Exercise</h3>
-          <p><a href="Extending_the_Thumb.html"/>Extending the Thumb</p>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Left and right controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-      <span class="glyphicon glyphicon-chevron-left"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-      <span class="glyphicon glyphicon-chevron-right"></span>
-      <span class="sr-only">Next</span>
-    </a>
+    <a href="/display/Index.html" class="active">Home</a>
+
   </div>
-</div>
+
+  <!-- Exercise List Image Carousel -->
+
+  <div class="container">
+    <h1 style="color:#226e93; text-align: center" />Exercise List
+
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+        <li data-target="#myCarousel" data-slide-to="4"></li>
+        <li data-target="#myCarousel" data-slide-to="5"></li>
+        <li data-target="#myCarousel" data-slide-to="6"></li>
+        <li data-target="#myCarousel" data-slide-to="7"></li>
+      </ol>
+
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner">
+
+        <div class="item active">
+          <img src="{{ url_for('static', filename='images/1.png')}}" alt="Arm Placed in the Front" style="width:100%;"
+            onclick='window.open("Arm_Placed_in_the_Front.html")'>
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Arm_Placed_in_the_Front.html" />Arm Placed in the Front</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Arm_Placed_on_its_Side.html" /><img src="{{ url_for('static', filename='images/2.png')}}"
+            alt="Arm Placed on its Side" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Arm_Placed_on_its_Side.html" />Arm Placed on its Side</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Extending_the_Elbow_1.html" /><img src="{{ url_for('static', filename='images/4.png')}}"
+            alt="Extending the Elbow - 1" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Extending_the_Elbow_1.html" />Extending the Elbow - 1</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Extending_the_Elbow_2.html" /><img src="{{ url_for('static', filename='images/5.png')}}"
+            alt="Extending the Elbow - 2" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Extending_the_Elbow_2.html" />Extending the Elbow - 2</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Turning_the_Forearm.html" /><img src="{{ url_for('static', filename='images/6.png')}}"
+            alt="Turning the Forearm" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Turning_the_Forearm.html" />Turning the Forearm</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Extending_the_Wrist.html" /><img src="{{ url_for('static', filename='images/7.png')}}"
+            alt="Extending the Wrist" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Extending_the_Wrist.html" />Extending the Wrist</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Extending_the_Fingers.html" /><img src="{{ url_for('static', filename='images/8.png')}}"
+            alt="Extending the Fingers" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Extending_the_Fingers.html" />Extending the Fingers</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <a href="/display/Extending_the_Thumb.html" /><img src="{{ url_for('static', filename='images/9.png')}}"
+            alt="Extending the Thumb" style="width:100%;">
+          <div class="carousel-caption">
+            <h3>Exercise</h3>
+            <p><a href="/display/Extending_the_Thumb.html" />Extending the Thumb</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Left and right controls -->
+      <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </div>
 
 </body>
+
 </html>

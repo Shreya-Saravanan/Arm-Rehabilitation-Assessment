@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Turning the Forearm</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="./styles/Exercise.css">
 
+  <title>Turning the Forearm</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercise.css') }}">
+    
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
+  
 </head>
+
 <body>
 
 <div class="topnav" id="myTopnav">
@@ -31,7 +38,7 @@
   </div>
 
   <a href="Home.html" class="active">Home</a>
-  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+  
 </div>
 
 <div style="padding-left:16px;">
@@ -49,28 +56,26 @@
   </div>
 </div>
 
+<div>
+
+  <a class="btn-start-recording" href="#" role="button" style:>Start Recording</a>
+  <a class="btn-stop-recording" href="#" role="button">Stop Recording</a>
+  <a class="btn-restart" href="#" role="button">Restart</a>
+  <hr>
+  <dl>
+                  <p>
+                      <input type="file" name="file" autocomplete="off" required>
+                  </p>
+              </dl>
+  <p>
+    <input type="submit" value="Upload">
+</p>
+
+<hr>
+      <video id="my-preview" controls autoplay></video>
+      </p>
+  </dl>
+</div>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-
-function myFunction() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
-  }
-}
-</script>

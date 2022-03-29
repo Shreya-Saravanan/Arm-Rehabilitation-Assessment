@@ -1,6 +1,10 @@
 <!doctype html>
-<title>Arm-Rehabilitation Exercise Predictor</title>
-
+<head>
+    <title>Upload Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+  </head>
 <h2 style="color: red;">Upload a video to get the class</h2>
 
 <p>
@@ -19,7 +23,7 @@
 
 <div style="margin: 10px auto;">
     <video autoplay="autoplay" controls="controls" preload="preload">
-        <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm;codecs=vp8">
+        <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm>
         </source>
     </video>
 </div>
@@ -51,11 +55,14 @@
         <video id="my-preview" controls autoplay></video>
         </p>
     </dl>
-
+</form>
 <!-- 3. Include the RecordRTC library and the latest adapter -->
 <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
 <script src="https://www.webrtc-experiment.com/EBML.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
     integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -85,6 +92,8 @@
     
     function startRecording() {
         // Disable start recording button
+        this.disabled = true;
+
         // Request access to the media devices
         navigator.mediaDevices.getUserMedia({
             audio: false,
@@ -93,9 +102,9 @@
             
             // Display a live preview on the video element of the page
             setSrcObject(stream, video);
-            var seconds = 0
-            durationID = setInterval(() => {
-                counterUI.innerHTML = convertTime(seconds)
+            var seconds=0
+            durationID=setInterval(() => {
+                counterUI.innerHTML=convertTime(seconds)
                 seconds++
             }, 1000);
             
@@ -106,7 +115,8 @@
             
             // Initialize the recorder
             recorder = new RecordRTCPromisesHandler(stream, {
-                mimeType: 'video/webm;codecs=vp8',
+                mimeType: 'video/webm',
+                recoderType: WhammyRecorder,
                 bitsPerSecond: 128000
             });
             
@@ -131,8 +141,8 @@
     function startTimer(evt) {
         evt.preventDefault();
         document.getElementById("btn-start-recording").disabled=true
-        let counter = 10;
-        let intervalID = setInterval(() => {
+        let counter = 2;
+        let intervalID=setInterval(() => {
             if (counter == -1) {
                 counterUI.innerHTML = "";
                 
@@ -151,8 +161,11 @@
     // When the user clicks on Stop video recording
     document.getElementById('btn-stop-recording').addEventListener("click", function () {
         this.disabled = true;
+        
         clearInterval(durationID)
-        counterUI.innerHTML=''
+        
+        counterUI.innerHTML='';
+        
         recorder.stopRecording().then(async function () {
             console.info('stopRecording success');
             // Retrieve recorded video as blob and display in the preview element

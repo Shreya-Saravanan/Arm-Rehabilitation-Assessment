@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
   <title>Exercises</title>
+  
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.
+  css">
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="./styles/Exercises.css">
+  
+  <link href="{{ url_for('static', filename='css/Exercise.css') }}" rel="stylesheet">
   
 </head>
 
 <body>
+  
 <div class="topnav" id="myTopnav">
   <h1 style="color:#178DBB"/> Arm Rehabilitation Exercises
   <a href="About.html">About</a>
@@ -21,6 +31,7 @@
     <button class="dropbtn"><a href="Exercises.html"/>Exercises
       <i class="fa fa-caret-down"></i>
     </button>
+    
     <div class="dropdown-content">
       <a href="Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
       <a href="Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
@@ -34,13 +45,14 @@
   </div>
 
   <a href="Home.html" class="active">Home</a>
-  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+  
 </div>
 
 <!-- Exercise List Image Carousel -->
 
 <div class="container">
   <h1 style="color:#226e93; text-align: center"/>Exercise List
+  
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
     <ol class="carousel-indicators">
@@ -58,7 +70,7 @@
     <div class="carousel-inner">
 
       <div class="item active">
-        <a href="Arm_Placed_in_the_Front.html"/><img src="images/1.png" alt="Arm Placed in the Front" style="width:100%;">
+        <a href="Arm_Placed_in_the_Front.html"/><img src="{{ url_for('static', filename='images/1.png')}}" alt="Arm Placed in the Front" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Arm_Placed_in_the_Front.html"/>Arm Placed in the Front</p>
@@ -66,7 +78,7 @@
       </div>
 
       <div class="item">
-        <a href="Arm_Placed_on_its_Side.html"/><img src="images/2.png" alt="Arm Placed on its Side" style="width:100%;">
+        <a href="Arm_Placed_on_its_Side.html"/><img src="{{ url_for('static', filename='images/2.png')}}" alt="Arm Placed on its Side" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Arm_Placed_on_its_Side.html"/>Arm Placed on its Side</p>
@@ -74,7 +86,7 @@
       </div>
 
       <div class="item">
-        <a href="Extending_the_Elbow_1.html"/><img src="images/4.png" alt="Extending the Elbow - 1" style="width:100%;">
+        <a href="Extending_the_Elbow_1.html"/><img src="{{ url_for('static', filename='images/4.png')}}" alt="Extending the Elbow - 1" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Extending_the_Elbow_1.html"/>Extending the Elbow - 1</p>
@@ -82,7 +94,7 @@
       </div>
 
       <div class="item">
-        <a href="Extending_the_Elbow_2.html"/><img src="images/5.png" alt="Extending the Elbow - 2" style="width:100%;">
+        <a href="Extending_the_Elbow_2.html"/><img src="{{ url_for('static', filename='images/5.png')}}" alt="Extending the Elbow - 2" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Extending_the_Elbow_2.html"/>Extending the Elbow - 2</p>
@@ -90,7 +102,7 @@
       </div>
 
       <div class="item">
-        <a href="Turning_the_Forearm.html"/><img src="images/6.png" alt="Turning the Forearm" style="width:100%;">
+        <a href="Turning_the_Forearm.html"/><img src="{{ url_for('static', filename='images/6.png')}}" alt="Turning the Forearm" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Turning_the_Forearm.html"/>Turning the Forearm</p>
@@ -98,7 +110,7 @@
       </div>
 
       <div class="item">
-        <a href="Extending_the_Wrist.html"/><img src="images/7.png" alt="Extending the Wrist" style="width:100%;">
+        <a href="Extending_the_Wrist.html"/><img src="{{ url_for('static', filename='images/7.png')}}" alt="Extending the Wrist" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Extending_the_Wrist.html"/>Extending the Wrist</p>
@@ -106,7 +118,7 @@
       </div>
 
       <div class="item">
-        <a href="Extending_the_Fingers.html"/><img src="images/8.png" alt="Extending the Fingers" style="width:100%;">
+        <a href="Extending_the_Fingers.html"/><img src="{{ url_for('static', filename='images/8.png')}}" alt="Extending the Fingers" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Extending_the_Fingers.html"/>Extending the Fingers</p>
@@ -114,7 +126,7 @@
       </div>
 
       <div class="item">
-        <a href="Extending_the_Thumb.html"/><img src="images/9.png" alt="Extending the Thumb" style="width:100%;">
+        <a href="Extending_the_Thumb.html"/><img src="{{ url_for('static', filename='images/9.png')}}" alt="Extending the Thumb" style="width:100%;">
         <div class="carousel-caption">
           <h3>Exercise</h3>
           <p><a href="Extending_the_Thumb.html"/>Extending the Thumb</p>
@@ -137,23 +149,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-<script>
-
-function myFunction() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
-  }
-}
-</script>

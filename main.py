@@ -11,7 +11,7 @@ import moviepy.editor as mp
 
 UPLOAD_FOLDER = 'static/uploads/'
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder = 'web_pages/')
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
@@ -81,45 +81,113 @@ def pred_video(video_file):
     return CLASSES_LIST[pred_class]
 
 
+# Home Page
 @app.route('/')
-def upload_form():
-    return render_template('upload.html')
+def mainpage():
+    return render_template('Home.html')
+# Home Page
+
+@app.route('/Home.html')
+def homepage():
+    return render_template('Home.html')
+
+@app.route("/")
+def favicon():
+    return "", 200
+
+# Exercises Page
+@app.route('/Exercises.html')
+def exercises_page():
+    return render_template('Exercises.html')
+
+# Exercise Page
+@app.route('/Arm_Placed_in_the_Front.html')
+def exercise_page_1():
+    return render_template('Arm_Placed_in_the_Front.html') 
+   
+# Exercise Page
+@app.route('/Arm_Placed_on_its_Side.html')
+def exercise_page_2():
+    return render_template('Arm_Placed_on_its_Side.html') 
+   
+# Exercise Page
+@app.route('/Extending_the_Elbow_1.html')
+def exercise_page_3():
+    return render_template('Extending_the_Elbow_1.html') 
+   
+# Exercise Page
+@app.route('/Extending_the_Elbow_2.html')
+def exercise_page_4():
+    return render_template('Extending_the_Elbow_2.html') 
+   
+# Exercise Page
+@app.route('/Extending_the_Fingers.html')
+def exercise_page_5():
+    return render_template('Extending_the_Fingers.html') 
+   
+# Exercise Page
+@app.route('/Extending_the_Thumb.html')
+def exercise_page_6():
+    return render_template('Extending_the_Thumb.html') 
+   
+# Exercise Page
+@app.route('/Extending_the_Wrist.html')
+def exercise_page_7():
+    return render_template('Extending_the_Wrist.html') 
+   
+# Exercise Page
+@app.route('/Turning_the_Forearm.html')
+def exercise_page_8():
+    return render_template('Turning_the_Forearm.html') 
+
+# About Page
+@app.route('/About.html')
+def about_page():
+    return render_template('About.html')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('Error_404.html'), 404
+# @app.route('/')
+# def upload_form():
+#     return render_template('upload.html')
 
 
-@app.route('/', methods = ['POST'])
-def upload_video():
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
+# @app.route('/', methods = ['POST'])
+# def upload_video():
+#     if 'file' not in request.files:
+#         flash('No file part')
+#         return redirect(request.url)
 
-    file = request.files['file']
+#     file = request.files['file']
 
-    if file.filename == '':
-        flash('No video selected for uploading')
+#     if file.filename == '':
+#         flash('No video selected for uploading')
 
-        return redirect(request.url)
+#         return redirect(request.url)
 
-    else:
-        _fn = secure_filename(file.filename)
-        fileName = os.path.join(app.config['UPLOAD_FOLDER'], _fn)
-        file.save(fileName)
+#     else:
+        
+#         fileName = os.path.join(app.config['UPLOAD_FOLDER'], _fn)
+#         file.save(fileName)
+#         _fn = secure_filename(file.filename)
+        
+#         targetName = os.path.join(app.config['UPLOAD_FOLDER'], 'out_'+_fn)
+#         duration = mp.VideoFileClip(fileName).duration
 
-        targetName = os.path.join(app.config['UPLOAD_FOLDER'], 'out_'+_fn)
-        duration = mp.VideoFileClip(fileName).duration
+#         ffmpeg_extract_subclip(
+#             fileName, 0, (duration - 10), targetname = targetName)
 
-        ffmpeg_extract_subclip(
-            fileName, 0, (duration - 10), targetname = targetName)
+#         pred = pred_video(os.path.join(
+#             app.config['UPLOAD_FOLDER'], targetName))
+#         flash(pred)
 
-        pred = pred_video(os.path.join(
-            app.config['UPLOAD_FOLDER'], targetName))
-        flash(pred)
-
-        return render_template('upload.html', filename = targetName)
+#         return render_template('./web_pages/upload.html', filename = targetName)
 
 
-@app.route('/display/<filename>')
-def display_video(filename):
-    return redirect(url_for('static', filename ='uploads/' + filename), code = 301)
+# @app.route('/display/<filename>')
+# def display_video(filename):
+#     return redirect(url_for('static', filename ='uploads/' + filename), code = 301)
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercise.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
 
@@ -58,9 +58,9 @@
       </div>
     </div>
 
-    <hr>
-
     <p>
+      <hr>
+
       {% with messages = get_flashed_messages() %}
       {% if messages %}
 
@@ -77,45 +77,35 @@
     <div style="margin: 10px auto;">
       <video autoplay="autoplay" controls="controls" preload="preload">
         <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
-      </source>
-  </video>
-</div>
-{% endif %}
-<!-- Live Recording Section -->
+        </source>
+      </video>
+    </div>
+    {% endif %}
+    <!-- Live Recording Section -->
 
-<form method=" POST" action="/" enctype="multipart/form-data">
-        <dl>
-          <p>
-            <!-- Live Recording Buttons -->
-            <hr>
-            <button id="btn-start-recording" onclick="startTimer(event);">Start Recording</button>
-            <button id="btn-stop-recording" disabled="disabled">Stop Recording</button>
-            <button id="btn-restart" onclick="location.reload(true)">Restart</button>
-          <div id="start-counter"></div>
-          </p>
-        </dl>
-</form>
 
-<!-- Upload Video Section -->
 
-<form method="POST" action="/" enctype="multipart/form-data">
-          <dl>
-            <p>
-              <input type="file" name="file" autocomplete="off" required>
-              <input type="text" style="display:none;" value="{{ Exercise['Exercise_Webpage'] }}" name="webpage">
-            </p>
-          </dl>
-          <p>
-            <input type="submit" value="Upload">
-          </p>
-</form>
+    <!-- Upload Video Section -->
 
-        <!--
+    <form method="POST" action="/" enctype="multipart/form-data">
+      <dl>
+        <p>
+          <hr>
+          <input type="file" name="file" autocomplete="off" required>
+          <input type="text" style="display:none;" value="{{ Exercise['Exercise_Webpage'] }}" name="webpage">
+        </p>
+      </dl>
+      <p>
+        <input type="submit" value="Upload">
+      </p>
+    </form>
+
+    <!--
   2. Include a video element that will display the current video stream
   and as well to show the recorded video at the end.
 -->
-        <hr>
-        <video id="my-preview" controls autoplay></video>
+    <hr>
+    <video id="my-preview" controls autoplay></video>
 
 </body>
 

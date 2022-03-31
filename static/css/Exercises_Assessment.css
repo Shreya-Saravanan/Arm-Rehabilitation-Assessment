@@ -30,6 +30,7 @@
 
 body {margin:0;font-family:Arial}
 
+/* Navbar Styling */
 .topnav {
   overflow: hidden;
   background-color: #333;
@@ -99,6 +100,47 @@ body {margin:0;font-family:Arial}
 
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+/* Upload Buttons Styling */
+.btn:link, .btn-start-recording:link, .btn-restart:link, .btn:visited, .btn-start-recording:visited, .btn-restart:visited {
+  background-color: teal;
+  color: white;
+  padding: 14px 28px;
+  text-align: center;
+  text-decoration: blink;
+  margin: 0 auto;
+
+  /* align-items: center; */
+}
+
+.btn:hover, .btn-start-recording:hover, .btn-restart:hover, .btn:active, .btn-start-recording:active, .btn-restart:active {
+  background-color: rgb(23, 141, 187);
+}
+
+
+.btn-stop-recording:link, .btn-stop-recording:visited{
+  background-color: rgb(119, 42, 32);
+  color: white;
+  padding: 14px 28px;
+  text-align: center;
+  text-decoration: blink;
+  margin: 0 auto;
+
+}
+
+.btn-stop-recording:hover, .btn-stop-recording:active{
+  background-color: rgb(233, 36, 10);
+}
+
+
+input{
+  background-color: rgb(23, 141, 187);
+  border: none;
+  color: white;
+  padding: 12px 12px;
+  text-decoration: blink;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 600px) {

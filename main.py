@@ -35,6 +35,36 @@ def convert_to_dict(filename):
     # Return the list
     return webpage_dict
 
+def display_result(result):
+    
+    completeCondition = ("Complete" in result)
+    incompleteCondition = ("Incomplete" in result)
+    partialCondition_25 = ("25" in result)
+    partialCondition_50 = ("50" in result)
+    partialCondition_75 = ("75" in result)
+    
+    Messages = {"It's Alright, Don't Give Up. You can do this!\nYour Recovery Rate is less than 25%.":'result_0', 
+                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25% but less than 50%!":'result_25', 
+                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50%!!":'result_50', 
+                "You're Almost there. Hang in There!!!\nYour Recovery Rate is atleast 75%!!!":'result_75', 
+                "Yay!!!! You have nearly Recovered successfully!!!!":'result_100'}
+    
+    assessmentResult = list(Messages.items())
+    
+    if completeCondition:
+        return assessmentResult[-1]
+    
+    if incompleteCondition:
+        return assessmentResult[0]
+    
+    if partialCondition_25:
+        return assessmentResult[1]
+    
+    if partialCondition_50:
+        return assessmentResult[2]
+    
+    if partialCondition_75:
+        return assessmentResult[3]
 
 UPLOAD_FOLDER = 'static/uploads/'
 
@@ -114,7 +144,7 @@ def pred_video(video_file):
     pred_vec = pred_vector[0].tolist()
     pred_class = pred_vec.index(max(pred_vec))
 
-    return CLASSES_LIST[pred_class]
+    return display_result(CLASSES_LIST[pred_class])
 
 
 @app.route('/', methods=['GET'])
@@ -124,6 +154,10 @@ def Index():
 @app.route('/display/', methods=['GET'])
 def About():
     return render_template('About.html')
+
+@app.errorhandler(404)
+def Not_Found(e):
+    return render_template('Error_404.html')
 
 @app.route('/display/', methods=['GET'])
 def Exercises():
@@ -165,9 +199,12 @@ def upload_video():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        pred = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        # print(prediction[0],prediction[1])
+        print(prediction)
 
-        flash(pred)
+        flash(prediction[0],prediction[1])
 
         print(request.form.get('webpage'))
 

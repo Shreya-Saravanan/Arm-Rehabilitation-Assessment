@@ -23,7 +23,7 @@
     <a href="/display/About.html">About</a>
 
     <div class="dropdown">
-      <button class="dropbtn"><a href="/display/Exercises.html" />Exercises
+      <button class="dropbtn"><a href="#" />Exercises
         <i class="fa fa-caret-down"></i>
       </button>
 
@@ -61,12 +61,12 @@
     <p>
       <hr>
 
-      {% with messages = get_flashed_messages() %}
+      {% with messages = get_flashed_messages(with_categories = true) %}
       {% if messages %}
 
     <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
+      {% for category, message in messages %}
+      <div class = "{{ category }}"><h3>{{ message }}</h3></div>
       {% endfor %}
     </ul>
     {% endif %}

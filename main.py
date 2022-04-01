@@ -79,11 +79,11 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 Model_Path = os.path.abspath(os.path.expanduser(
     os.path.expandvars('models/conv_lstm.h5')))
 
-print(Model_Path)
+print(f'\nModel Path: {Model_Path}\n')
 
 Model = load_model(Model_Path)
 
-print("Model Loaded Successfully!!!")
+print("\nModel Loaded Successfully!!!\n")
 
 
 def frames_extraction(video_path):
@@ -146,26 +146,16 @@ def pred_video(video_file):
 
     return display_result(CLASSES_LIST[pred_class])
 
-
-@app.route('/', methods=['GET'])
-def Index():
-    return render_template('Index.html')
-
-@app.route('/display/', methods=['GET'])
+@app.route('/display/About.html', methods=['GET'])
 def About():
     return render_template('About.html')
 
-@app.errorhandler(404)
-def Not_Found(e):
-    return render_template('Error_404.html')
-
-@app.route('/display/', methods=['GET'])
+@app.route('/display/Exercises.html', methods=['GET'])
 def Exercises():
     return render_template('Exercises.html')
 
 
 exercise_list = convert_to_dict("Exercises.csv")
-
 
 @app.route('/Exercise/<Exercise_Webpage>', methods=['GET', 'POST'])
 def details(Exercise_Webpage):
@@ -181,8 +171,13 @@ def details(Exercise_Webpage):
                            webpage_title = exercise_dict['Exercise_Title'])
 
 
+@app.route('/', methods=['GET'])
+def Index():
+    return render_template('Index.html')
+
 @app.route('/', methods=['POST'])
 def upload_video():
+    
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
@@ -201,7 +196,6 @@ def upload_video():
 
         prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
-        # print(prediction[0],prediction[1])
         print(prediction)
 
         flash(prediction[0],prediction[1])
@@ -215,6 +209,9 @@ def upload_video():
 def display_video(filename):
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
+@app.errorhandler(404)
+def Not_Found(e):
+    return render_template('Error_404.html')
 
 if __name__ == "__main__":
     

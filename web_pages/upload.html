@@ -1,17 +1,10 @@
 <!doctype html>
-
-<head>
-    <title>Upload Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-</head>
+<title>Arm-Rehabilitation Exercise Predictor</title>
 <h2 style="color: red;">Upload a video to get the class</h2>
 
 <p>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-
 <ul>
     {% for message in messages %}
     <li>{{ message }}</li>
@@ -21,49 +14,166 @@
 {% endwith %}
 </p>
 {% if filename %}
-
 <div style="margin: 10px auto;">
     <video autoplay="autoplay" controls="controls" preload="preload">
-        <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm>
+        <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
         </source>
     </video>
 </div>
 {% endif %}
-<form method=" post" action="/" enctype="multipart/form-data">
-        <dl>
-            <p>
 
-                <!-- 1. Include action buttons play/stop -->
-                <button id="btn-start-recording" onclick="startTimer(event);">Start Recording</button>
-                <button id="btn-stop-recording" disabled="disabled">Stop Recording</button>
-                <button id="btn-restart" onclick="location.reload(true)">Restart</button>
-            <form method="post" action="/" enctype="multipart/form-data">
-                <dl>
-                    <p>
-                        <input type="file" name="file" autocomplete="off" required>
-                    </p>
-                </dl>
-                <p>
-                    <input type="submit" value="Upload">
-                </p>
-            </form>
-            <div id="start-counter"></div>
-            <!--
+
+<form method="post" action="/" enctype="multipart/form-data">
+    <dl>
+        <p>
+            <!-- <input type="file" name="file" autocomplete="off" required> -->
+            <!-- 1. Include action buttons play/stop -->
+            <button id="btn-start-recording" onclick="startTimer(event);">Start Recording</button>
+            <button id="btn-stop-recording" disabled="disabled">Stop Recording</button>
+            <button id="btn-restart" onclick="location.reload(true)">Restart</button>
+        <div id="start-counter"></div>
+        <!--
     2. Include a video element that will display the current video stream
     and as well to show the recorded video at the end.
  -->
-            <hr>
-            <video id="my-preview" controls autoplay></video>
-            </p>
-        </dl>
-        </form>
-        <!-- 3. Include the RecordRTC library and the latest adapter -->
-        <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+        <hr>
+        <video id="my-preview" controls autoplay></video>
+        </p>
+    </dl>
+    <p>
+        <input type="submit" value="Upload">
+    </p>
+</form>
 
-        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<!-- 3. Include the RecordRTC library and the latest adapter -->
+<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+    integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    // Store a reference of the preview video element and a global reference to the recorder instance
+    var video = document.getElementById('my-preview');
+    let counterUI = document.getElementById("start-counter");
+    let durationID;
+    var recorder;
+    
+    function convertTime(seconds) {
+        var sec_num = parseInt(seconds); // don't forget the second param
+        console.log(seconds, 'seconds', sec_num);
+        
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+        console.log(minutes, seconds);
+        
+        if (minutes < 10) { minutes = "0" + minutes; }
+        if (seconds < 10) { seconds = "0" + seconds; }
+        
+        return minutes + ':' + seconds;
+    };
+    function startRecording() {
+        // Disable start recording button
+        // Request access to the media devices
+        navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: true
+        }).then(function (stream) {
+            // Display a live preview on the video element of the page
+            setSrcObject(stream, video);
+            var seconds = 0
+            durationID = setInterval(() => {
+                counterUI.innerHTML = convertTime(seconds)
+                seconds++
+            }, 1000);
+            // Start to display the preview on the video element
+            // and mute the video to disable the echo issue !
+            video.play();
+            video.muted = true;
+            // Initialize the recorder
+            recorder = new RecordRTCPromisesHandler(stream, {
+                mimeType: 'video/webm',
+                bitsPerSecond: 128000
+            });
+            // Start recording the video
+            recorder.startRecording().then(function () {
+                console.info('Recording video ...');
+            }).catch(function (error) {
+                console.error('Cannot start video recording: ', error);
+            });
+            // release stream on stopRecording
+            recorder.stream = stream;
+            // Enable stop recording button
+            document.getElementById('btn-stop-recording').disabled = false;
+        }).catch(function (error) {
+            console.error("Cannot access media devices: ", error);
+        });
+    }
+    // When the user clicks on start video recording
+    // document.getElementById('btn-start-recording').addEventListener("click",  , false);
+    function startTimer(evt) {
+        // console.log(evt);
+        evt.preventDefault();
+        document.getElementById("btn-start-recording").disabled = true
+        let counter = 2;
+        let intervalID = setInterval(() => {
+            if (counter == -1) {
+                counterUI.innerHTML = "";
+                clearInterval(intervalID);
+                startRecording();
+                return;
+            }
+            counterUI.innerHTML = counter;
+            counter--;
+        }, 1000);
+        return false;
+    }
+    // When the user clicks on Stop video recording
+    document.getElementById('btn-stop-recording').addEventListener("click", function () {
+        this.disabled = true;
+        clearInterval(durationID)
+        counterUI.innerHTML = ''
+        recorder.stopRecording().then(async function () {
+            console.info('stopRecording success');
 
-        <script src="https://www.webrtc-experiment.com/EBML.js"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
-            integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            if (recorder.blob) {
+                var blob = URL.createObjectURL(recorder.blob);
+                console.log(blob);
+                
+                var fileType = 'video'; // or "audio"
+                var fileName = ((new Date()).toISOString()) + '.mp4';  // or "wav"
+                var formData = new FormData();
+                var boundary = String(Math.random()).slice(2);
+                
+                formData.append("event_id", window.event_id);
+                formData.append("type", recorder.type);
+                formData.append("upload_option", "option");
+                formData.append('file', recorder.blob, fileName);
+                
+                try {
+                    let res = await axios.post('/', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    console.log(res);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            
+            video.play();
+            // Unmute video on preview
+            video.muted = true;
+            // Stop the device streaming
+            recorder.stream.stop();
+            // Enable record button again !
+            document.getElementById('btn-start-recording').disabled = false;
+        }).catch(function (error) {
+            console.error('stopRecording failure', error);
+        });
+    }, false);
+    function sendToServer(blob) {
+    }
+</script>

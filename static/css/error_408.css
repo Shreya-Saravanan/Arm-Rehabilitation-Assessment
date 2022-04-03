@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:700');
+@import url("https://fonts.googleapis.com/css?family=Cedarville+Cursive&text=notyou");
+
+body {
+  box-sizing: border-box;
+  background-color: #50e3c2;
+  color: #333;
+  font-family: 'Roboto Mono', monospace;
+  margin: 0;
+  text-align: center;
+}
+body:before {
+  content: "";
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  pointer-events: none;
+  animation: off 1s 6s forwards;
+}
+body:after {
+  content: ".";
+  color: white;
+  font-size: 5rem;
+  position: absolute;
+  margin-left: -2.5rem;
+  top: 30%;
+  text-align: center;
+  z-index: 1;
+  animation: dots 2s 4, off 1s 6s forwards;
+}
+.container {
+  background-image: radial-gradient(
+    720px at center,
+    rgba(255, 255, 255, 0.7) 50%,
+    #50e3c2 0
+  );
+  background-repeat: no-repeat;
+  min-height: 720px;
+  opacity: 0;
+  position: relative;
+  animation: on 1s 6s forwards;
+}
+svg {
+  margin: 2em 0 0;
+  max-width: 623px;
+}
+.main-h1 {
+  color: white;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  animation: on 2s 3s forwards, off 1s 6s forwards;
+}
+h2 {
+  font-size: 2rem;
+  padding-top: 8%;
+}
+.retry-btn {
+  background-color: #0072e7;
+  border: 0;
+  border-radius: 0.25em;
+  color: white;
+  display: block;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5rem;
+  margin: 1em auto;
+  padding: 1em 1.5em;
+  transition: background-color 0.5s ease;
+}
+.retry-btn:after {
+  content: "💔";
+}
+.retry-btn:hover {
+  background-color: #6400e7;
+  cursor: pointer;
+}
+.retry-btn:hover:after {
+  content: "❤️";
+}
+.note {
+  font-family: "Cedarville Cursive", cursive;
+}
+.heart,
+.heart2 {
+  animation: moveUp 2s infinite;
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: 290px 120px;
+}
+.heart2 {
+  animation-delay: 0.8s;
+}
+@keyframes dots {
+  30% {
+    text-shadow: 0.25em 0 0 white;
+  }
+  60%,
+  90% {
+    text-shadow: 0.25em 0 0 white, 0.5em 0 0 white;
+  }
+}
+@keyframes off {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes on {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes moveUp {
+  from {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+}

@@ -11,8 +11,6 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
-
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
 
 </head>
@@ -92,9 +90,10 @@
         <p>
           <!-- <input type="file" name="file" autocomplete="off" required> -->
           <!-- 1. Include action buttons play/stop -->
-          <button id="btn-start-recording" onclick="startTimer(event);">Start Recording</button>
-          <button id="btn-stop-recording" disabled="disabled">Stop Recording</button>
-          <button id="btn-restart" onclick="location.reload(true)">Restart</button>
+          <button id="btn-start-recording"class="button-start" onclick="startTimer(event);">Start Recording</button>
+          <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
+          <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
+
         <div id="start-counter"></div>
         <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.

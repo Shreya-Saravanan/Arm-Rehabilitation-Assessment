@@ -1,9 +1,9 @@
-Exercise_Number,Exercise_Webpage,Exercise_Title,Instructions,Image
-1,Arm_Placed_in_the_Front.html,Arm Placed in the Front,,1.png
-2,Arm_Placed_on_its_Side.html,Arm Placed on its Side,,2.png
-3,Extending_the_Elbow_1.html,Extending the Elbow - 1,,4.png
-4,Extending_the_Elbow_2.html,Extending the Elbow - 2,,5.png
-5,Turning_the_Forearm.html,Turning the Forearm,,6.png
-6,Extending_the_Wrist.html,Extending the Wrist,,7.png
-7,Extending_the_Fingers.html,Extending the Fingers,,8.png
-8,Extending_the_Thumb.html,Extending the Thumb,,9.png
+Exercise_Number,Exercise_Webpage,Exercise_Title,Instructions,Image,Exercise_Models
+1,Arm_Placed_in_the_Front.html,Arm Placed in the Front,,1.png,Ex_1_Model.h5
+2,Arm_Placed_on_its_Side.html,Arm Placed on its Side,,2.png,Ex_2_Model.h5
+3,Extending_the_Elbow_1.html,Extending the Elbow - 1,,4.png,Ex_4_Model.h5
+4,Extending_the_Elbow_2.html,Extending the Elbow - 2,,5.png,Ex_5_Model.h5
+5,Turning_the_Forearm.html,Turning the Forearm,,6.png,Ex_6_Model.h5
+6,Extending_the_Wrist.html,Extending the Wrist,,7.png,Ex_7_Model.h5
+7,Extending_the_Fingers.html,Extending the Fingers,,8.png,Ex_8_Model.h5
+8,Extending_the_Thumb.html,Extending the Thumb,,9.png,Ex_9_Model.h5

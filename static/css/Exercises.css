@@ -85,7 +85,10 @@ body {
 }
 
 img {
+  width: 640;
+  height:480;
   vertical-align: middle;
+  object-fit: contain;
 }
 
 /* Slideshow container */

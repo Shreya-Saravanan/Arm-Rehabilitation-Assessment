@@ -190,9 +190,22 @@ def upload_video():
         return redirect(request.url)
 
     else:
-
+        
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        file_recording = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        if "_live_recording" in file_recording:
+            index = file_recording.rfind('_')
+            duration = int(file_recording[(index + 1):-4])
+            print(f'\nDuration: {duration} seconds\n')
+            
+            filename = filename[:(filename.find('_live_recording'))] + '.mp4'
+            targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+             
+            ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
+            
 
         prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
@@ -209,9 +222,21 @@ def upload_video():
 def display_video(filename):
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
+@app.errorhandler(403)
+def Forbidden(e):
+    return render_template('Error_403.html'),403
+
 @app.errorhandler(404)
 def Not_Found(e):
-    return render_template('Error_404.html')
+    return render_template('Error_404.html'),404
+
+@app.errorhandler(408)
+def Server_Timeout(e):
+    return render_template('Error_408.html'),408
+
+@app.errorhandler(500)
+def Internal_Server_Error(e):
+    return render_template('Error_500.html'),500
 
 if __name__ == "__main__":
     

@@ -134,12 +134,12 @@ body {
 }
 
 /* Upload Buttons Styling */
-.btn:link,
-.btn-start-recording:link,
-.btn-restart:link,
+.btn,
+.button-start,
+.button-restart,
 .btn:visited,
-.btn-start-recording:visited,
-.btn-restart:visited {
+.button-start:visited,
+.button-restart:visited {
   background-color: teal;
   color: white;
   padding: 14px 28px;
@@ -151,17 +151,17 @@ body {
 }
 
 .btn:hover,
-.btn-start-recording:hover,
-.btn-restart:hover,
+.button-start:hover,
+.button-restart:hover,
 .btn:active,
-.btn-start-recording:active,
-.btn-restart:active {
+.button-start:active,
+.button-restart:active {
   background-color: rgb(23, 141, 187);
 }
 
 
-.btn-stop-recording:link,
-.btn-stop-recording:visited {
+.button-stop,
+.button-stop:visited {
   background-color: rgb(119, 42, 32);
   color: white;
   padding: 14px 28px;
@@ -171,8 +171,8 @@ body {
 
 }
 
-.btn-stop-recording:hover,
-.btn-stop-recording:active {
+.button-stop:hover,
+.button-stop:active {
   background-color: rgb(233, 36, 10);
 }
 

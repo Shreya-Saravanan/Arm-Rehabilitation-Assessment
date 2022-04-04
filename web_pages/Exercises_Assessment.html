@@ -13,6 +13,8 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
 
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
+
 </head>
 
 <body>
@@ -28,14 +30,14 @@
       </button>
 
       <div class="dropdown-content">
-        <a href="/Exercise/Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
-        <a href="/Exercise/Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
-        <a href="/Exercise/Extending_the_Elbow_1.html">Extending the Elbow - 1</a>
-        <a href="/Exercise/Extending_the_Elbow_2.html">Extending the Elbow - 2</a>
-        <a href="/Exercise/Turning_the_Forearm.html">Turning the Forearm</a>
-        <a href="/Exercise/Extending_the_Wrist.html">Extending the Wrist</a>
-        <a href="/Exercise/Extending_the_Fingers.html">Extending the Fingers</a>
-        <a href="/Exercise/Extending_the_Thumb.html">Extending the Thumb</a>
+        <a href="/Exercise/Arm_Placed_in_the_Front">Arm Placed in the Front</a>
+        <a href="/Exercise/Arm_Placed_on_its_Side">Arm Placed on its Side</a>
+        <a href="/Exercise/Extending_the_Elbow_1">Extending the Elbow - 1</a>
+        <a href="/Exercise/Extending_the_Elbow_2">Extending the Elbow - 2</a>
+        <a href="/Exercise/Turning_the_Forearm">Turning the Forearm</a>
+        <a href="/Exercise/Extending_the_Wrist">Extending the Wrist</a>
+        <a href="/Exercise/Extending_the_Fingers">Extending the Fingers</a>
+        <a href="/Exercise/Extending_the_Thumb">Extending the Thumb</a>
       </div>
     </div>
 
@@ -49,11 +51,11 @@
 
     <div class="row">
       <div class="column" style="background-color:#aaa;">
-        <h2>Instructions</h2>
+        <h2 style="text-align:center;">Instructions</h2>
         <p>{{ Exercise['Instructions'] }}</p>
       </div>
       <div class="column" style="background-color:#bbb;">
-        <h2>Upload Section</h2>
+        <h2 style="text-align:center;">Upload Section</h2>
         <p>Some text..</p>
       </div>
     </div>
@@ -66,7 +68,9 @@
 
     <ul>
       {% for category, message in messages %}
-      <div class = "{{ category }}"><h3>{{ message }}</h3></div>
+      <div class="{{ category }}">
+        <h3>{{ message }}</h3>
+      </div>
       {% endfor %}
     </ul>
     {% endif %}
@@ -83,7 +87,23 @@
     {% endif %}
     <!-- Live Recording Section -->
 
-
+    <form method="post" action="/" enctype="multipart/form-data">
+      <dl>
+        <p>
+          <!-- <input type="file" name="file" autocomplete="off" required> -->
+          <!-- 1. Include action buttons play/stop -->
+          <button id="btn-start-recording" onclick="startTimer(event);">Start Recording</button>
+          <button id="btn-stop-recording" disabled="disabled">Stop Recording</button>
+          <button id="btn-restart" onclick="location.reload(true)">Restart</button>
+        <div id="start-counter"></div>
+        <!--
+      2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
+          -->
+        <hr>
+        <video id="my-preview" controls autoplay></video>
+        </p>
+      </dl>
+    </form>
 
     <!-- Upload Video Section -->
 
@@ -108,5 +128,156 @@
     <video id="my-preview" controls autoplay></video>
 
 </body>
+
+<!-- 3. Include the RecordRTC library and the latest adapter -->
+<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+  integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  // Store a reference of the preview video element and a global reference to the recorder instance
+  var video = document.getElementById('my-preview');
+  let counterUI = document.getElementById("start-counter");
+  let durationID;
+  var recorder;
+  var runtime;
+
+  function convertTime(seconds) {
+    runtime = seconds;
+
+    var sec_num = parseInt(seconds); // don't forget the second param
+    console.log(seconds, 'seconds', sec_num);
+
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+    console.log(minutes, seconds);
+
+    if (minutes < 10) { minutes = "0" + minutes; }
+    if (seconds < 10) { seconds = "0" + seconds; }
+
+    return minutes + ':' + seconds;
+  };
+  function startRecording() {
+    // Disable start recording button
+    // Request access to the media devices
+    navigator.mediaDevices.getUserMedia({
+      audio: false, // Disabled Audio Recording
+      video: true
+    }).then(function (stream) {
+      // Display a live preview on the video element of the page
+      setSrcObject(stream, video);
+      
+      var seconds = 0
+      
+      durationID = setInterval(() => {
+        counterUI.innerHTML = convertTime(seconds)
+        seconds++
+      }, 1000);
+      // Start to display the preview on the video element
+      // and mute the video to disable the echo issue !
+      video.play();
+      video.muted = true;
+
+      // Initialize the recorder
+      recorder = new RecordRTCPromisesHandler(stream, {
+        mimeType: 'video/webm',
+        bitsPerSecond: 128000
+      });
+      // Start recording the video
+      recorder.startRecording().then(function () {
+        console.info('Recording video ...');
+      }).catch(function (error) {
+        console.error('Cannot start video recording: ', error);
+      });
+      
+      // Release Stream on stopRecording
+      recorder.stream = stream;
+      
+      // Enable stop recording button
+      document.getElementById('btn-stop-recording').disabled = false;
+    }).catch(function (error) {
+      
+      console.error("Cannot access media devices: ", error);
+    });
+  }
+  // When the user clicks on start video recording
+  function startTimer(evt) {
+    // console.log(evt);
+    evt.preventDefault();
+    document.getElementById("btn-start-recording").disabled = true
+    
+    let counter = 2; // Change it to 10 seconds during actual demo
+    
+    let intervalID = setInterval(() => {
+      if (counter == -1) {
+        counterUI.innerHTML = "";
+        clearInterval(intervalID);
+        startRecording();
+        return;
+      }
+      counterUI.innerHTML = counter;
+      counter--;
+    }, 1000);
+    return false;
+  }
+  
+  // When the user clicks on Stop video recording
+  document.getElementById('btn-stop-recording').addEventListener("click", function () {
+    this.disabled = true;
+    clearInterval(durationID)
+    counterUI.innerHTML = ''
+    recorder.stopRecording().then(async function () {
+      console.info('stopRecording success');
+
+      if (recorder.blob) {
+        var blob = URL.createObjectURL(recorder.blob);
+        console.log(blob);
+
+        var fileType = 'video'; // or "audio"
+        var fileName = ((new Date()).toISOString()) + '_' + runtime + '.mp4';  // or "wav"
+        var formData = new FormData();
+        var boundary = String(Math.random()).slice(2);
+
+        formData.append("event_id", window.event_id);
+        formData.append("type", recorder.type);
+        formData.append("upload_option", "option");
+        formData.append('file', recorder.blob, fileName);
+
+        try {
+          let res = await axios.post('/', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      video.play();
+      // Unmute video on preview
+      video.muted = true;
+      
+      // Stop the device streaming
+      recorder.stream.stop();
+      
+      // Enable record button again !
+      document.getElementById('btn-start-recording').disabled = false;
+    }).catch(function (error) {
+      console.error('stopRecording failure', error);
+    });
+  }, false);
+  function sendToServer(blob) {
+  }
+
+</script>
 
 </html>

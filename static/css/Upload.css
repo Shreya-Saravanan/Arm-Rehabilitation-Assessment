@@ -1,6 +1,7 @@
+/* Upload Buttons Styling */
 body {margin:0;font-family:Arial}
 
-.btn, .btn-start-recording:link,  .btn-restart:link, .btn, .btn-start-recording,  .btn-restart:visited {
+.btn, .button-start:link,  .button-restart:link, .btn, .button-start,  .button-restart {
   background-color: teal;
   color: white;
   padding: 14px 28px;
@@ -11,12 +12,15 @@ body {margin:0;font-family:Arial}
   /* align-items: center; */
 }
 
-.btn:hover, .btn-start-recording:hover, .btn-restart:hover, .btn:active, .btn-start-recording:active, .btn-restart:active {
+.button-start:hover{
+  background-color: rgb(42, 187, 23);
+}
+.btn:hover, .button-restart:hover, .btn:active, .button-start:active, .button-restart:active {
   background-color: rgb(23, 141, 187);
 }
 
 
-.btn-stop-recording, .btn-stop-recording:link, .btn-stop-recording, .btn-stop-recording:visited{
+.button-stop, .button-stop:link, .button-stop, .button-stop:visited{
   background-color: rgb(119, 42, 32);
   color: white;
   padding: 14px 28px;
@@ -26,16 +30,7 @@ body {margin:0;font-family:Arial}
 
 }
 
-.btn-stop-recording:hover, .btn-stop-recording:active{
+.button-stop:hover, .button-stop:active{
   background-color: rgb(233, 36, 10);
 }
 
-
-input{
-  background-color: rgb(23, 141, 187);
-  border: none;
-  color: white;
-  padding: 12px 12px;
-  text-decoration: blink;
-  cursor: pointer;
-}

@@ -157,7 +157,7 @@ def Exercises():
 
 exercise_list = convert_to_dict("Exercises.csv")
 
-@app.route('/Exercise/<Exercise_Webpage>', methods=['GET', 'POST'])
+@app.route('/Exercise/<Exercise_Webpage>', methods=['GET'])
 def details(Exercise_Webpage):
 
     try:
@@ -168,14 +168,11 @@ def details(Exercise_Webpage):
 
     return render_template("Exercises_Assessment.html", 
                            Exercise = exercise_dict, 
-                           webpage_title = exercise_dict['Exercise_Title'])
+                           webpage_title = exercise_dict['Exercise_Title'],
+                           instructions = exercise_dict['Instructions'])
 
 
-@app.route('/', methods=['GET'])
-def Index():
-    return render_template('Index.html')
-
-@app.route('/', methods=['POST'])
+@app.route('/',methods=['POST'])
 def upload_video():
     
     if 'file' not in request.files:
@@ -195,20 +192,38 @@ def upload_video():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
         file_recording = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        try:
+            if "_live_recording" in file_recording:
+                index = file_recording.rfind('_')
+                
+                if ".mp4" in file_recording:
+                    duration = (file_recording[(index + 1):-4])
+                    filename = filename[:(filename.find('_live_recording'))] + '.mp4'
+                    
+                
+                if ".webm" in file_recording:
+                    duration = (file_recording[(index + 1):-5])
+                    filename = filename[:(filename.find('_live_recording'))] + '.webm'
+                    
+                duration = int(duration)
+                
+                print(f'\nDuration: {duration} seconds\n')
+
+                targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                
+                ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
+                
+            
+            prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            
+        except:
+            prediction = ["Uh-oh, there seems to be a problem", 'result_0']
+            # return render_template('Error_500.html'),500
         
         if "_live_recording" in file_recording:
-            index = file_recording.rfind('_')
-            duration = int(file_recording[(index + 1):-4])
-            print(f'\nDuration: {duration} seconds\n')
-            
-            filename = filename[:(filename.find('_live_recording'))] + '.mp4'
-            targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-             
-            ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
-            
-
-        prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
+            print('Hello')
+            return prediction[0]
         print(prediction)
 
         flash(prediction[0],prediction[1])
@@ -221,6 +236,10 @@ def upload_video():
 @app.route('/display/<filename>')
 def display_video(filename):
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
+
+@app.route('/', methods=['GET'])
+def Index():
+    return render_template('Index.html')
 
 @app.errorhandler(403)
 def Forbidden(e):

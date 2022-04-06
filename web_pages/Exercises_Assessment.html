@@ -11,6 +11,8 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
+
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
 
 </head>
@@ -28,14 +30,14 @@
       </button>
 
       <div class="dropdown-content">
-        <a href="/Exercise/Arm_Placed_in_the_Front">Arm Placed in the Front</a>
-        <a href="/Exercise/Arm_Placed_on_its_Side">Arm Placed on its Side</a>
-        <a href="/Exercise/Extending_the_Elbow_1">Extending the Elbow - 1</a>
-        <a href="/Exercise/Extending_the_Elbow_2">Extending the Elbow - 2</a>
-        <a href="/Exercise/Turning_the_Forearm">Turning the Forearm</a>
-        <a href="/Exercise/Extending_the_Wrist">Extending the Wrist</a>
-        <a href="/Exercise/Extending_the_Fingers">Extending the Fingers</a>
-        <a href="/Exercise/Extending_the_Thumb">Extending the Thumb</a>
+        <a href="/Exercise/Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
+        <a href="/Exercise/Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
+        <a href="/Exercise/Extending_the_Elbow_1.html">Extending the Elbow - 1</a>
+        <a href="/Exercise/Extending_the_Elbow_2.html">Extending the Elbow - 2</a>
+        <a href="/Exercise/Turning_the_Forearm.html">Turning the Forearm</a>
+        <a href="/Exercise/Extending_the_Wrist.html">Extending the Wrist</a>
+        <a href="/Exercise/Extending_the_Fingers.html">Extending the Fingers</a>
+        <a href="/Exercise/Extending_the_Thumb.html">Extending the Thumb</a>
       </div>
     </div>
 
@@ -50,7 +52,7 @@
     <div class="row">
       <div class="column" style="background-color:#aaa;">
         <h2 style="text-align:center;">Instructions</h2>
-        <p>{{ Exercise['Instructions'] }}</p>
+        <p>{{instructions}}</p>
       </div>
       <div class="column" style="background-color:#bbb;">
         <h2 style="text-align:center;">Upload Section</h2>
@@ -84,16 +86,21 @@
     </div>
     {% endif %}
     <!-- Live Recording Section -->
-
-    <form method="post" action="/" enctype="multipart/form-data">
+    <div id="hello">
+      {% for category, message in messages %}
+      <div class="{{ category }}">
+        <h3>{{ message }}</h3>
+      </div>
+      {% endfor %}
+    </div>
+    <form method="POST" action="/aef" enctype="multipart/form-data">
       <dl>
         <p>
           <!-- <input type="file" name="file" autocomplete="off" required> -->
           <!-- 1. Include action buttons play/stop -->
-          <button id="btn-start-recording"class="button-start" onclick="startTimer(event);">Start Recording</button>
+          <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
           <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
-          <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
-
+          <button id="btn-restart" class="button-restart" href="/Exercise/+{{ Exercise['Exercise_Webpage']}}">Restart</button>
         <div id="start-counter"></div>
         <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
@@ -123,8 +130,6 @@
   2. Include a video element that will display the current video stream
   and as well to show the recorded video at the end.
 -->
-    <hr>
-    <video id="my-preview" controls autoplay></video>
 
 </body>
 
@@ -138,6 +143,7 @@
   integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<!-- <script src="{{ url_for('static', filename='scripts/upload.js') }}"></script> -->
 <script>
   // Store a reference of the preview video element and a global reference to the recorder instance
   var video = document.getElementById('my-preview');
@@ -150,7 +156,6 @@
     runtime = seconds;
 
     var sec_num = parseInt(seconds); // don't forget the second param
-    console.log(seconds, 'seconds', sec_num);
 
     var hours = Math.floor(sec_num / 3600);
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -167,14 +172,12 @@
     // Disable start recording button
     // Request access to the media devices
     navigator.mediaDevices.getUserMedia({
-      audio: false, // Disabled Audio Recording
+      audio: false,
       video: true
     }).then(function (stream) {
       // Display a live preview on the video element of the page
       setSrcObject(stream, video);
-      
       var seconds = 0
-      
       durationID = setInterval(() => {
         counterUI.innerHTML = convertTime(seconds)
         seconds++
@@ -183,7 +186,6 @@
       // and mute the video to disable the echo issue !
       video.play();
       video.muted = true;
-
       // Initialize the recorder
       recorder = new RecordRTCPromisesHandler(stream, {
         mimeType: 'video/webm',
@@ -195,25 +197,21 @@
       }).catch(function (error) {
         console.error('Cannot start video recording: ', error);
       });
-      
-      // Release Stream on stopRecording
+      // release stream on stopRecording
       recorder.stream = stream;
-      
       // Enable stop recording button
       document.getElementById('btn-stop-recording').disabled = false;
     }).catch(function (error) {
-      
       console.error("Cannot access media devices: ", error);
     });
   }
   // When the user clicks on start video recording
+  // document.getElementById('btn-start-recording').addEventListener("click",  , false);
   function startTimer(evt) {
     // console.log(evt);
     evt.preventDefault();
     document.getElementById("btn-start-recording").disabled = true
-    
-    let counter = 2; // Change it to 10 seconds during actual demo
-    
+    let counter = 2;
     let intervalID = setInterval(() => {
       if (counter == -1) {
         counterUI.innerHTML = "";
@@ -226,7 +224,6 @@
     }, 1000);
     return false;
   }
-  
   // When the user clicks on Stop video recording
   document.getElementById('btn-stop-recording').addEventListener("click", function () {
     this.disabled = true;
@@ -240,7 +237,7 @@
         console.log(blob);
 
         var fileType = 'video'; // or "audio"
-        var fileName = ((new Date()).toISOString()) + '_' + runtime + '.mp4';  // or "wav"
+        var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.webm';  // or "wav"
         var formData = new FormData();
         var boundary = String(Math.random()).slice(2);
 
@@ -255,6 +252,7 @@
               'Content-Type': 'multipart/form-data'
             }
           });
+          document.getElementById("hello").innerHTML = res.data;
           console.log(res);
         } catch (error) {
           console.log(error);
@@ -264,10 +262,8 @@
       video.play();
       // Unmute video on preview
       video.muted = true;
-      
       // Stop the device streaming
       recorder.stream.stop();
-      
       // Enable record button again !
       document.getElementById('btn-start-recording').disabled = false;
     }).catch(function (error) {
@@ -276,6 +272,8 @@
   }, false);
   function sendToServer(blob) {
   }
+
+
 
 </script>
 

@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <a href="/display/Index.html" class="active">Home</a>
+    <a href="/" class="active">Home</a>
 
   </div>
 
@@ -81,7 +81,7 @@
   </video>
 </div>
 {% endif %}
-<form method=" post" action="/" enctype="multipart/form-data">
+<form method="POST" action="/" enctype="multipart/form-data">
         <dl>
           <p>
 
@@ -89,11 +89,11 @@
             <button id="btn-start-recording" onclick="startTimer(event);">Start Recording</button>
             <button id="btn-stop-recording" disabled="disabled">Stop Recording</button>
             <button id="btn-restart" onclick="location.reload(true)">Restart</button>
-          <form method="post" action="/" enctype="multipart/form-data">
+          <form method="POST" action="/" enctype="multipart/form-data">
             <dl>
               <p>
                 <input type="file" name="file" autocomplete="off" required>
-                <input type="hidden" value="Extending_the_Elbow_1" name="webpage">
+                <input type="text" style="display:none;" value="Extending_the_Elbow_1" name="webpage">
               </p>
             </dl>
             <p>

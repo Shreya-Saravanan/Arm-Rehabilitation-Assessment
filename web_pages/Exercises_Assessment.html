@@ -86,21 +86,21 @@
     </div>
     {% endif %}
     <!-- Live Recording Section -->
-    <div id="hello">
+    <div id="recording_result">
       {% for category, message in messages %}
       <div class="{{ category }}">
         <h3>{{ message }}</h3>
       </div>
       {% endfor %}
     </div>
-    <form method="POST" action="/aef" enctype="multipart/form-data">
+    <div>
       <dl>
         <p>
           <!-- <input type="file" name="file" autocomplete="off" required> -->
           <!-- 1. Include action buttons play/stop -->
           <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
           <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
-          <button id="btn-restart" class="button-restart" href="/Exercise/+{{ Exercise['Exercise_Webpage']}}">Restart</button>
+          <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
         <div id="start-counter"></div>
         <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
@@ -109,8 +109,8 @@
         <video id="my-preview" controls autoplay></video>
         </p>
       </dl>
-    </form>
-
+    </div>
+    
     <!-- Upload Video Section -->
 
     <form method="POST" action="/" enctype="multipart/form-data">
@@ -236,8 +236,8 @@
         var blob = URL.createObjectURL(recorder.blob);
         console.log(blob);
 
-        var fileType = 'video'; // or "audio"
-        var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.webm';  // or "wav"
+        var fileType = 'video';
+        var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.mp4';  
         var formData = new FormData();
         var boundary = String(Math.random()).slice(2);
 
@@ -252,7 +252,7 @@
               'Content-Type': 'multipart/form-data'
             }
           });
-          document.getElementById("hello").innerHTML = res.data;
+          document.getElementById("recording_result").innerHTML = res.data;
           console.log(res);
         } catch (error) {
           console.log(error);

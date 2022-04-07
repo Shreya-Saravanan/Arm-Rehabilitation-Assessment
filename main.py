@@ -43,13 +43,19 @@ def display_result(result):
     partialCondition_50 = ("50" in result)
     partialCondition_75 = ("75" in result)
     
-    Messages = {"It's Alright, Don't Give Up. You can do this!\nYour Recovery Rate is less than 25%.":'result_0', 
-                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25% but less than 50%!":'result_25', 
-                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50%!!":'result_50', 
-                "You're Almost there. Hang in There!!!\nYour Recovery Rate is atleast 75%!!!":'result_75', 
-                "Yay!!!! You have nearly Recovered successfully!!!!":'result_100'}
+    Messages = ["It's Alright, Don't Give Up. You can do this!\nYour Recovery Rate is less than 25%.", 
+                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25% but less than 50%!",
+                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50%!!",
+                "You're Almost there. Hang in There!!!\nYour Recovery Rate is atleast 75%!!!",
+                "Yay!!!! You have nearly Recovered successfully!!!!"]
     
-    assessmentResult = list(Messages.items())
+    predictionResult = {Messages[0]:'result_0',
+                        Messages[1]:'result_25',
+                        Messages[2]:'result_50',
+                        Messages[3]:'result_75',
+                        Messages[-1]:'result_100'}
+    
+    assessmentResult = list(predictionResult.items())
     
     if completeCondition:
         return assessmentResult[-1]
@@ -199,11 +205,6 @@ def upload_video():
                 if ".mp4" in file_recording:
                     duration = (file_recording[(index + 1):-4])
                     filename = filename[:(filename.find('_live_recording'))] + '.mp4'
-                    
-                
-                if ".webm" in file_recording:
-                    duration = (file_recording[(index + 1):-5])
-                    filename = filename[:(filename.find('_live_recording'))] + '.webm'
                     
                 duration = int(duration)
                 

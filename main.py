@@ -172,10 +172,12 @@ def details(Exercise_Webpage):
     except:
         return render_template('Error_404.html')
 
+    img_link = "images/" + exercise_dict['Image']
     return render_template("Exercises_Assessment.html", 
                            Exercise = exercise_dict, 
                            webpage_title = exercise_dict['Exercise_Title'],
-                           instructions = exercise_dict['Instructions'])
+                           instructions = exercise_dict['Instructions'], 
+                           Image = img_link)
 
 
 @app.route('/',methods=['POST'])

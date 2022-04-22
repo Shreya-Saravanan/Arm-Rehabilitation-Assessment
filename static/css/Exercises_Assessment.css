@@ -1,6 +1,17 @@
 * {
   box-sizing: border-box;
 }
+/* Background Image */
+.bg{
+  margin:auto auto auto 40%;
+}
+
+/* Instructions */
+.Instructions{
+  text-align:justify;
+  color:rgb(23, 141, 187);
+  padding: 2px 5px 2px 5px;
+}
 
 /* Create two unequal columns that floats next to each other */
 .column {

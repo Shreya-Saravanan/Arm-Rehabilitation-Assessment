@@ -46,13 +46,14 @@
   </div>
 
   <div style="padding-left:16px;">
-    <h1 style="color:#226e93; text-align: center">{{ Exercise['Exercise_Title'] }}</h1>
-
-
+    <h1 style="color:rgb(34, 110, 147); text-align: center">{{ Exercise['Exercise_Title'] }}</h1>
+    
+    <img class="bg" src="{{ url_for('static', filename=Image) }}">
+    
     <div class="row">
       <div class="column" style="background-color:#aaa;">
-        <h2 style="text-align:center;">Instructions</h2>
-        <p>{{instructions}}</p>
+        <h2 style="text-align:center;">Instructions Section</h2>
+        <p class="Instructions">{{Exercise.Instructions}}</p>
       </div>
       <div class="column" style="background-color:#bbb;">
         <h2 style="text-align:center;">Upload Section</h2>

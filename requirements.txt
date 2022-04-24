@@ -4,3 +4,4 @@ numpy
 tensorflow
 moviepy
 imageio-ffmpeg
+Flask-Markdown

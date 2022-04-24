@@ -9,7 +9,7 @@ from keras.models import load_model
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import moviepy.editor as mp
 import csv
-
+from flaskext.markdown import Markdown
 
 def convert_to_dict(filename):
     """
@@ -81,6 +81,8 @@ app = Flask(__name__,
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+
+Markdown(app)
 
 Model_Path = os.path.abspath(os.path.expanduser(
     os.path.expandvars('models/conv_lstm.h5')))
@@ -173,10 +175,14 @@ def details(Exercise_Webpage):
         return render_template('Error_404.html')
 
     img_link = "images/" + exercise_dict['Image']
+    
+    with  open("static/instructions/" + exercise_dict['Instructions'],"r", encoding = 'utf-8') as file:
+        instruction =  file.read()
+        
     return render_template("Exercises_Assessment.html", 
                            Exercise = exercise_dict, 
                            webpage_title = exercise_dict['Exercise_Title'],
-                           instructions = exercise_dict['Instructions'], 
+                           Instructions = instruction, 
                            Image = img_link)
 
 

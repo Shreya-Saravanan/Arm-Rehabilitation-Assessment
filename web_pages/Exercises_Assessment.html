@@ -47,54 +47,78 @@
 
   <div style="padding-left:16px;">
     <h1 style="color:rgb(34, 110, 147); text-align: center">{{ Exercise['Exercise_Title'] }}</h1>
-    
-    <img class="bg" src="{{ url_for('static', filename=Image) }}">
-    
-    <div class="row">
-      <div class="column" style="background-color:#aaa;">
-        <h2 style="text-align:center;">Instructions Section</h2>
 
+    <img class="bg" src="{{ url_for('static', filename=Image) }}">
+
+    <div class="row">
+      <div class="column" style="background-color:rgba(147, 186, 30, 0.757);">
+        <h2 style="text-align:center;">Instructions Section</h2>
         <p class="Instructions">{{ Instructions|markdown }}</p>
       </div>
-      <div class="column" style="background-color:#bbb;">
+      <div class="column" style="background-color:rgba(16, 186, 212, 0.454);">
         <h2 style="text-align:center;">Upload Section</h2>
-        <p>Some text..</p>
+        <h3><u>Live Recording:</u></h3>
+        <p>
+          <li>Click the Start-Recording Button to begin the live recording.</li>
+
+          <li>The Live Recording will begin after 10 seconds to allow you to setup yourself in a comfortable position.
+          </li>
+
+          <li>When you wish to end the assessment, please wait for 10 seconds before clicking the Stop-Recording Button.
+          </li>
+
+          <li>If you wish to restart the recording process from the beginning, please click the Restart Button.</li>
+        </p>
+
+        <h3><u>File Upload:</u></h3>
+        <p>
+          <li>Please upload a video file of the following specifications:</li>
+
+        <ul>Resolution : 480p</ul>
+
+        <ul>Frame Rate : 30 FPS</ul>
+
+        <li>Click on the Chose File Button to select the video recording of the exercise you wish to perform and click
+          the Upload Button to upload the video recording.</li>
+        <li>You can also use this link to record online as per the required specification: <a
+            href="https://www.webrtc-experiment.com/RecordRTC/">Record</a></li>
+        </p>
+
       </div>
     </div>
 
     <p>
       <hr>
-
       {% with messages = get_flashed_messages(with_categories = true) %}
-      {% if messages %}
-
-    <ul>
-      {% for category, message in messages %}
-      <div class="{{ category }}">
-        <h3>{{ message }}</h3>
-      </div>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+        {% if messages %}
+          <ul>
+            {% for category, message in messages %}
+            <div class="{{ category }}">
+              <h3>{{ message }}</h3>
+            </div>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
     </p>
-    {% if filename %}
 
-    <div style="margin: 10px auto;">
-      <video autoplay="autoplay" controls="controls" preload="preload">
-        <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
-        </source>
-      </video>
-    </div>
+    {% if filename %}
+      <div style="margin: 10px auto;">
+        <video autoplay="autoplay" controls="controls" preload="preload">
+          <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
+        </video>
+      </div>
     {% endif %}
+
     <!-- Live Recording Section -->
     <div id="recording_result">
       {% for category, message in messages %}
-      <div class="{{ category }}">
+      <div class = "{{ category }}">
         <h3>{{ message }}</h3>
       </div>
       {% endfor %}
     </div>
+    
     <div>
       <dl>
         <p>
@@ -112,7 +136,7 @@
         </p>
       </dl>
     </div>
-    
+
     <!-- Upload Video Section -->
 
     <form method="POST" action="/" enctype="multipart/form-data">
@@ -239,7 +263,7 @@
         console.log(blob);
 
         var fileType = 'video';
-        var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.mp4';  
+        var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.mp4';
         var formData = new FormData();
         var boundary = String(Math.random()).slice(2);
 

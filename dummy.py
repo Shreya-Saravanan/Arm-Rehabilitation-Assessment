@@ -9,7 +9,7 @@ from keras.models import load_model
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import moviepy.editor as mp
 import csv
-
+from flaskext.markdown import Markdown
 
 def convert_to_dict(filename):
     """
@@ -43,13 +43,19 @@ def display_result(result):
     partialCondition_50 = ("50" in result)
     partialCondition_75 = ("75" in result)
     
-    Messages = {"It's Alright, Don't Give Up. You can do this!\nYour Recovery Rate is less than 25%.":'result_0', 
-                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25% but less than 50%!":'result_25', 
-                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50%!!":'result_50', 
-                "You're Almost there. Hang in There!!!\nYour Recovery Rate is atleast 75%!!!":'result_75', 
-                "Yay!!!! You have nearly Recovered successfully!!!!":'result_100'}
+    Messages = ["It's Alright, Don't Give Up. You can do this!\nYour Recovery Rate is less than 25%.", 
+                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25% but less than 50%!",
+                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50%!!",
+                "You're Almost there. Hang in There!!!\nYour Recovery Rate is atleast 75%!!!",
+                "Yay!!!! You have nearly Recovered successfully!!!!"]
     
-    assessmentResult = list(Messages.items())
+    predictionResult = {Messages[0]:'result_0',
+                        Messages[1]:'result_25',
+                        Messages[2]:'result_50',
+                        Messages[3]:'result_75',
+                        Messages[-1]:'result_100'}
+    
+    assessmentResult = list(predictionResult.items())
     
     if completeCondition:
         return assessmentResult[-1]
@@ -76,15 +82,19 @@ app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
-Model_Path = os.path.abspath(os.path.expanduser(
-    os.path.expandvars('models/conv_lstm.h5')))
+Markdown(app)
 
-print(f'\nModel Path: {Model_Path}\n')
+def Load_Model(Exercise_Models):
+    Model_Path = os.path.abspath(os.path.expanduser(
+    os.path.expandvars('models/' + Exercise_Models)))
 
-Model = load_model(Model_Path)
+    print(f'\nModel Path: {Model_Path}\n')
 
-print("\nModel Loaded Successfully!!!\n")
+    Model = load_model(Model_Path)
 
+    print(f"\nModel for Exercise {Exercise_Models[3:4]} Loaded Successfully!!!\n")
+    
+    return Model
 
 def frames_extraction(video_path):
     SEQUENCE_LENGTH = 40
@@ -111,7 +121,9 @@ def frames_extraction(video_path):
     return frames_list
 
 
-def pred_video(video_file):
+def pred_video(Exercise_Models, video_file):
+    
+    Model = Load_Model(Exercise_Models)
     
     SEQUENCE_LENGTH = 40
     
@@ -157,7 +169,7 @@ def Exercises():
 
 exercise_list = convert_to_dict("Exercises.csv")
 
-@app.route('/Exercise/<Exercise_Webpage>', methods=['GET', 'POST'])
+@app.route('/Exercise/<Exercise_Webpage>', methods=['GET'])
 def details(Exercise_Webpage):
 
     try:
@@ -166,15 +178,28 @@ def details(Exercise_Webpage):
     except:
         return render_template('Error_404.html')
 
-    return render_template("Exercises_Assessment.html", 
+    img_link = "images/" + exercise_dict['Image']
+    
+    Load_Model(exercise_dict['Exercise_Models'])
+    
+    with  open("static/instructions/" + exercise_dict['Instructions'], "r", encoding = 'utf-8') as file:
+        instruction =  file.read()
+        
+    return render_template("Dummy.html", 
                            Exercise = exercise_dict, 
-                           webpage_title = exercise_dict['Exercise_Title'])
+                           webpage_title = exercise_dict['Exercise_Title'],
+                           Instructions = instruction, 
+                           Image = img_link)
 
 
+@app.route('/Exercise/<Exercise_Webpage>',methods=['POST'])
+def Upload_Video(Exercise_Webpage):
+    
+    try:
+        exercise_dict = exercise_list[Exercise_Webpage]
 
-
-@app.route('/', methods=['POST'])
-def upload_video():
+    except:
+        return render_template('Error_404.html')
     
     if 'file' not in request.files:
         flash('No file part')
@@ -194,19 +219,33 @@ def upload_video():
         
         file_recording = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
-        if "_live_recording" in file_recording:
-            index = file_recording.rfind('_')
-            duration = int(file_recording[(index + 1):-4])
-            print(f'\nDuration: {duration} seconds\n')
-            
-            filename = filename[:(filename.find('_live_recording'))] + '.mp4'
-            targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-             
-            ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
-            
+        try:
+            if "_live_recording" in file_recording:
+                index = file_recording.rfind('_')
+                
+                if ".mp4" in file_recording:
+                    duration = (file_recording[(index + 1):-4])
+                    filename = filename[:(filename.find('_live_recording'))] + '.mp4'
+                    
+                duration = int(duration)
+                
+                print(f'\nDuration: {duration} seconds\n')
 
-        prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                
+                ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
+                
+            
+            prediction = pred_video(exercise_dict['Exercise_Models'], os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            
+        except:
+            prediction = ["Uh-oh, there seems to be a problem", 'result_0']
+            return render_template('Error_500.html'),500
         
+        if "_live_recording" in file_recording:
+            print('Hello')
+            return prediction[0]
         print(prediction)
 
         flash(prediction[0],prediction[1])
@@ -214,6 +253,7 @@ def upload_video():
         print(request.form.get('webpage'))
 
         return details(request.form.get('webpage'))
+
 
 @app.route('/display/<filename>')
 def display_video(filename):
@@ -225,19 +265,19 @@ def Index():
 
 @app.errorhandler(403)
 def Forbidden(e):
-    return render_template('Error_403.html')
+    return render_template('Error_403.html'),403
 
 @app.errorhandler(404)
 def Not_Found(e):
-    return render_template('Error_404.html')
+    return render_template('Error_404.html'),404
 
 @app.errorhandler(408)
 def Server_Timeout(e):
-    return render_template('Error_408.html')
+    return render_template('Error_408.html'),408
 
 @app.errorhandler(500)
 def Internal_Server_Error(e):
-    return render_template('Error_500.html')
+    return render_template('Error_500.html'),500
 
 if __name__ == "__main__":
     

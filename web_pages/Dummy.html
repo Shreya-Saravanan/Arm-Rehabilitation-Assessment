@@ -78,47 +78,18 @@
 
         <ul>Frame Rate : 30 FPS</ul>
 
+        <ul>Video File Type: MP4 - ".mp4"</ul>
+
         <li>Click on the Chose File Button to select the video recording of the exercise you wish to perform and click
           the Upload Button to upload the video recording.</li>
         <li>You can also use this link to record online as per the required specification: <a
             href="https://www.webrtc-experiment.com/RecordRTC/" target="_blank">Record</a></li>
         </p>
-
       </div>
     </div>
-
-    <p>
-      <hr>
-      {% with messages = get_flashed_messages(with_categories = true) %}
-        {% if messages %}
-          <ul>
-            {% for category, message in messages %}
-            <div class="{{ category }}">
-              <h3>{{ message }}</h3>
-            </div>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      {% endwith %}
-    </p>
-
-    {% if filename %}
-      <div style="margin: 10px auto;">
-        <video autoplay="autoplay" controls="controls" preload="preload">
-          <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
-        </video>
-      </div>
-    {% endif %}
 
     <!-- Live Recording Section -->
-    <div id="recording_result">
-      {% for category, message in messages %}
-      <div class = "{{ category }}">
-        <h3>{{ message }}</h3>
-      </div>
-      {% endfor %}
-    </div>
-    
+    <hr>
     <div>
       <dl>
         <p>
@@ -126,7 +97,9 @@
           <!-- 1. Include action buttons play/stop -->
           <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
           <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
+          <button id="btn-download" class="button-download" disabled="disabled" onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
           <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
+
         <div id="start-counter"></div>
         <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
@@ -136,6 +109,23 @@
         </p>
       </dl>
     </div>
+
+    <div id="recording_result">
+      {% for category, message in messages %}
+      <div class="{{ category }}">
+        <h3>{{ message }}</h3>
+        <hr>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if filename %}
+    <div style="margin: 10px auto;">
+      <video autoplay="autoplay" controls="controls" preload="preload">
+        <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
+      </video>
+    </div>
+    {% endif %}
 
     <!-- Upload Video Section -->
 
@@ -156,7 +146,21 @@
   2. Include a video element that will display the current video stream
   and as well to show the recorded video at the end.
 -->
+    <p>
+      <hr>
+      {% with messages = get_flashed_messages(with_categories = true) %}
+      {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+      <div class="{{ category }}">
+        <h3>{{ message }}</h3>
+      </div>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 
+    </p>
 </body>
 
 <!-- 3. Include the RecordRTC library and the latest adapter -->
@@ -181,6 +185,9 @@
   var runtime;
   var Webpage = "{{ Exercise['Exercise_Webpage'] }}";
   console.log(Webpage);
+  
+  var upload_blob = null;
+  var upload_filename = '';
 
   function convertTime(seconds) {
     runtime = seconds;
@@ -198,6 +205,7 @@
 
     return minutes + ':' + seconds;
   };
+  
   function startRecording() {
     // Disable start recording button
     // Request access to the media devices
@@ -235,8 +243,38 @@
       console.error("Cannot access media devices: ", error);
     });
   }
-  // When the user clicks on start video recording
-  // document.getElementById('btn-start-recording').addEventListener("click",  , false);
+
+
+
+  // Download Blob Function
+  function downloadBlob(blob, fileName) {
+    // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
+  
+    // Create a link element
+    
+    const download_link = document.createElement("a");
+
+    // Set link's href to point to the Blob URL
+    
+    download_link.href = URL.createObjectURL(blob);;
+    download_link.download = fileName;
+  
+    // Append link to the body
+    
+    document.getElementById('btn-download').appendChild(download_link);
+  
+    // Dispatch click event on the link
+    // This is necessary as link.click() does not work on the latest firefox
+    
+    download_link.dispatchEvent(new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window
+    }));
+    document.getElementById('btn-download').removeChild(download_link);
+  }
+  
+    // When the user clicks on start video recording
   function startTimer(evt) {
     // console.log(evt);
     evt.preventDefault();
@@ -268,6 +306,10 @@
 
         var fileType = 'video';
         var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.mp4';
+
+        upload_blob = recorder.blob;
+        upload_filename = fileName;
+
         var formData = new FormData();
         var boundary = String(Math.random()).slice(2);
 
@@ -296,10 +338,13 @@
       recorder.stream.stop();
       // Enable record button again !
       document.getElementById('btn-start-recording').disabled = false;
+      document.getElementById('btn-download').disabled = false;
+
     }).catch(function (error) {
       console.error('stopRecording failure', error);
     });
   }, false);
+  
   function sendToServer(blob) {
   }
 

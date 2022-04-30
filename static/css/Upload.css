@@ -34,3 +34,17 @@ body {margin:0;font-family:Arial}
   background-color: rgb(233, 36, 10);
 }
 
+.button-download, .button-download:link, .button-download, .button-download:visited{
+  background-color: rgb(119, 42, 32);
+  color: white;
+  padding: 14px 28px;
+  text-align: center;
+  text-decoration: blink;
+  margin: 0 auto;
+
+}
+
+.button-download:hover, .button-download:active{
+  background-color: rgb(86, 52, 200);
+}
+

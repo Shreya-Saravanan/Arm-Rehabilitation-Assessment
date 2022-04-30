@@ -1,6 +1,6 @@
 import os
 import urllib.request
-from flask import Flask, flash, request, redirect, url_for, render_template
+from flask import Flask, flash, redirect, request, url_for, render_template
 from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -80,19 +80,21 @@ app = Flask(__name__,
 
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the video file to be uploaded
 
 Markdown(app)
 
-Model_Path = os.path.abspath(os.path.expanduser(
-    os.path.expandvars('models/conv_lstm.h5')))
+def Load_Model(Exercise_Models):
+    Model_Path = os.path.abspath(os.path.expanduser(
+    os.path.expandvars('models/' + Exercise_Models)))
 
-print(f'\nModel Path: {Model_Path}\n')
+    print(f'\nModel Path: {Model_Path}\n')
 
-Model = load_model(Model_Path)
+    Model = load_model(Model_Path)
 
-print("\nModel Loaded Successfully!!!\n")
-
+    print(f"\nModel for Exercise {Exercise_Models[3:4]} Loaded Successfully!!!\n")
+    
+    return Model
 
 def frames_extraction(video_path):
     SEQUENCE_LENGTH = 40
@@ -119,26 +121,20 @@ def frames_extraction(video_path):
     return frames_list
 
 
-def pred_video(video_file):
+def pred_video(Exercise_Models, video_file):
+    
+    Model = Load_Model(Exercise_Models)
     
     SEQUENCE_LENGTH = 40
     
-    CLASSES_LIST = ["Exercise 1 - Arm Placed in the Front - Complete",
-                    "Exercise 1 - Arm Placed in the Front - Incomplete",
-                    "Exercise 2 - Arm Placed on its Side - Complete",
-                    "Exercise 2 - Arm Placed on its Side - Incomplete",
-                    "Exercise 4 - Extending the Elbow_1 - Complete",
-                    "Exercise 4 - Extending the Elbow_1 - Incomplete",
-                    "Exercise 5 - Extending the Elbow_2 - Complete",
-                    "Exercise 5 - Extending the Elbow_2 - Incomplete",
-                    "Exercise 6 - Turning the Forearm - Complete",
-                    "Exercise 6 - Turning the Forearm - Incomplete",
-                    "Exercise 7 - Extending the Wrist - Complete",
-                    "Exercise 7 - Extending the Wrist - Incomplete",
-                    "Exercise 8 - Extending the Fingers - Complete",
-                    "Exercise 8 - Extending the Fingers - Incomplete",
-                    "Exercise 9 - Extending the Thumb - Complete",
-                    "Exercise 9 - Extending the Thumb - Incomplete"]
+    CLASSES_LIST = ["Exercise 1 - Arm Placed in the Front - Complete", "Exercise 1 - Arm Placed in the Front - Incomplete",
+                    "Exercise 2 - Arm Placed on its Side - Complete", "Exercise 2 - Arm Placed on its Side - Incomplete",
+                    "Exercise 4 - Extending the Elbow_1 - Complete", "Exercise 4 - Extending the Elbow_1 - Incomplete",
+                    "Exercise 5 - Extending the Elbow_2 - Complete", "Exercise 5 - Extending the Elbow_2 - Incomplete",
+                    "Exercise 6 - Turning the Forearm - Complete", "Exercise 6 - Turning the Forearm - Incomplete",
+                    "Exercise 7 - Extending the Wrist - Complete", "Exercise 7 - Extending the Wrist - Incomplete",
+                    "Exercise 8 - Extending the Fingers - Complete", "Exercise 8 - Extending the Fingers - Incomplete",
+                    "Exercise 9 - Extending the Thumb - Complete", "Exercise 9 - Extending the Thumb - Incomplete"]
 
     features = []
     frames = frames_extraction(video_file)
@@ -153,6 +149,14 @@ def pred_video(video_file):
     pred_class = pred_vec.index(max(pred_vec))
 
     return display_result(CLASSES_LIST[pred_class])
+
+def Delete_File(upload_path, filename):
+    if os.path.exists(upload_path):
+        os.remove(upload_path)
+        print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
+    
+    else:
+        print("The file does not exist")
 
 @app.route('/display/About.html', methods=['GET'])
 def About():
@@ -176,18 +180,26 @@ def details(Exercise_Webpage):
 
     img_link = "images/" + exercise_dict['Image']
     
-    with  open("static/instructions/" + exercise_dict['Instructions'],"r", encoding = 'utf-8') as file:
+    Load_Model(exercise_dict['Exercise_Models'])
+    
+    with  open("static/instructions/" + exercise_dict['Instructions'], "r", encoding = 'utf-8') as file:
         instruction =  file.read()
         
-    return render_template("Exercises_Assessment.html", 
+    return render_template("Dummy.html", 
                            Exercise = exercise_dict, 
                            webpage_title = exercise_dict['Exercise_Title'],
                            Instructions = instruction, 
                            Image = img_link)
 
 
-@app.route('/',methods=['POST'])
-def upload_video():
+@app.route('/Exercise/<Exercise_Webpage>',methods=['POST'])
+def Upload_Video(Exercise_Webpage):
+    
+    try:
+        exercise_dict = exercise_list[Exercise_Webpage]
+
+    except:
+        return render_template('Error_404.html')
     
     if 'file' not in request.files:
         flash('No file part')
@@ -206,6 +218,7 @@ def upload_video():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
         file_recording = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
         try:
             if "_live_recording" in file_recording:
                 index = file_recording.rfind('_')
@@ -222,25 +235,31 @@ def upload_video():
                 
                 ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
                 
+            upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             
-            prediction = pred_video(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            prediction = pred_video(exercise_dict['Exercise_Models'], upload_path)
             
             
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']
-            # return render_template('Error_500.html'),500
+            return render_template('Error_500.html'),500
         
         if "_live_recording" in file_recording:
-            print('Hello')
+            print('Live Recording')
             return prediction[0]
+        
         print(prediction)
 
         flash(prediction[0],prediction[1])
-
-        print(request.form.get('webpage'))
-
+        
+        try:
+            Delete_File(upload_path, filename)
+        
+        except:
+            print('File did not get deleted')
+        
         return details(request.form.get('webpage'))
-
+    
 
 @app.route('/display/<filename>')
 def display_video(filename):

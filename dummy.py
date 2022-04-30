@@ -92,7 +92,7 @@ def Load_Model(Exercise_Models):
 
     Model = load_model(Model_Path)
 
-    print(f"\nModel for Exercise {Exercise_Models[3:4]} Loaded Successfully!!!\n")
+    print(f"\nModel for Exercise {int(Exercise_Models[3:4]) - 1} Loaded Successfully!!!\n")
     
     return Model
 
@@ -151,13 +151,17 @@ def pred_video(Exercise_Models, video_file):
     return display_result(CLASSES_LIST[pred_class])
 
 def Delete_File(upload_path, filename):
-    if os.path.exists(upload_path):
-        os.remove(upload_path)
-        print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
-    
-    else:
-        print("The file does not exist")
+    try:
+        if os.path.exists(upload_path):
+            os.remove(upload_path)
+            print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
+        
+        else:
+            print(f"The file {filename} does not exist\n")
 
+    except:
+        print('File did not get deleted')
+        
 @app.route('/display/About.html', methods=['GET'])
 def About():
     return render_template('About.html')
@@ -225,23 +229,27 @@ def Upload_Video(Exercise_Webpage):
                 
                 if ".mp4" in file_recording:
                     duration = (file_recording[(index + 1):-4])
-                    filename = filename[:(filename.find('_live_recording'))] + '.mp4'
+                    filename = filename[:(filename.rfind('_live_recording_'))] + duration + '.mp4'
+                    print(f'\nFile Name: {filename}\n')
                     
                 duration = int(duration)
                 
                 print(f'\nDuration: {duration} seconds\n')
 
                 targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                print(f'File Name after Trimming: {targetName}')
                 
                 ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
+                filename = targetName
+                print(f'\nFile Name: {filename}\n')
                 
             upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             
             prediction = pred_video(exercise_dict['Exercise_Models'], upload_path)
             
-            
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']
+            
             return render_template('Error_500.html'),500
         
         if "_live_recording" in file_recording:
@@ -252,11 +260,8 @@ def Upload_Video(Exercise_Webpage):
 
         flash(prediction[0],prediction[1])
         
-        try:
-            Delete_File(upload_path, filename)
-        
-        except:
-            print('File did not get deleted')
+        Delete_File(upload_path, filename)
+        print('Normal')
         
         return details(request.form.get('webpage'))
     

@@ -92,7 +92,7 @@ def Load_Model(Exercise_Models):
 
     Model = load_model(Model_Path)
 
-    print(f"\nModel for Exercise {Exercise_Models[3:4]} Loaded Successfully!!!\n")
+    print(f"\nModel for Exercise {int(Exercise_Models[3:4]) - 1} Loaded Successfully!!!\n")
     
     return Model
 
@@ -151,12 +151,16 @@ def pred_video(Exercise_Models, video_file):
     return display_result(CLASSES_LIST[pred_class])
 
 def Delete_File(upload_path, filename):
-    if os.path.exists(upload_path):
-        os.remove(upload_path)
-        print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
-    
-    else:
-        print("The file does not exist")
+    try:
+        if os.path.exists(upload_path):
+            os.remove(upload_path)
+            print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
+        
+        else:
+            print(f"The File {filename} does not exist\n")
+
+    except:
+        print('File did not get deleted')
 
 @app.route('/display/About.html', methods=['GET'])
 def About():
@@ -199,7 +203,7 @@ def Upload_Video(Exercise_Webpage):
         exercise_dict = exercise_list[Exercise_Webpage]
 
     except:
-        return render_template('Error_404.html')
+        return render_template('Error_500.html')
     
     if 'file' not in request.files:
         flash('No file part')
@@ -235,6 +239,10 @@ def Upload_Video(Exercise_Webpage):
                 
                 ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
                 
+                print(f'File Name: {filename}')
+                
+                print(f'Target Name: {targetName}')
+                
             upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             
             prediction = pred_video(exercise_dict['Exercise_Models'], upload_path)
@@ -246,17 +254,12 @@ def Upload_Video(Exercise_Webpage):
         
         if "_live_recording" in file_recording:
             print('Live Recording')
-            return prediction[0]
         
         print(prediction)
 
         flash(prediction[0],prediction[1])
-        
-        try:
-            Delete_File(upload_path, filename)
-        
-        except:
-            print('File did not get deleted')
+
+        Delete_File(upload_path, filename)
         
         return details(request.form.get('webpage'))
     

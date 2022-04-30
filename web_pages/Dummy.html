@@ -97,7 +97,8 @@
           <!-- 1. Include action buttons play/stop -->
           <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
           <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
-          <button id="btn-download" class="button-download" disabled="disabled" onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
+          <button id="btn-download" class="button-download" disabled="disabled"
+            onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
           <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
 
         <div id="start-counter"></div>
@@ -105,7 +106,7 @@
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
           -->
         <hr>
-        <video id="my-preview" controls autoplay></video>
+        <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
         </p>
       </dl>
     </div>
@@ -121,7 +122,7 @@
 
     {% if filename %}
     <div style="margin: 10px auto;">
-      <video autoplay="autoplay" controls="controls" preload="preload">
+      <video style="display: block; margin-left: auto; margin-right: auto;" autoplay="autoplay" controls="controls" preload="preload">
         <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm">
       </video>
     </div>
@@ -185,7 +186,7 @@
   var runtime;
   var Webpage = "{{ Exercise['Exercise_Webpage'] }}";
   console.log(Webpage);
-  
+
   var upload_blob = null;
   var upload_filename = '';
 
@@ -205,7 +206,7 @@
 
     return minutes + ':' + seconds;
   };
-  
+
   function startRecording() {
     // Disable start recording button
     // Request access to the media devices
@@ -245,36 +246,37 @@
   }
 
 
-
   // Download Blob Function
-  function downloadBlob(blob, fileName) {
-    // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
-  
-    // Create a link element
+  function downloadBlob(blob = upload_blob, name = upload_filename) {
     
+    // Convert blob into a Blob URL (URL pointing to an object in the browser's memory)
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Create a link element
     const download_link = document.createElement("a");
 
     // Set link's href to point to the Blob URL
-    
-    download_link.href = URL.createObjectURL(blob);;
-    download_link.download = fileName;
-  
+    download_link.href = blobUrl;
+    download_link.download = name;
+
     // Append link to the body
-    
-    document.getElementById('btn-download').appendChild(download_link);
-  
+    document.body.appendChild(download_link);
+
     // Dispatch click event on the link
     // This is necessary as link.click() does not work on the latest firefox
-    
-    download_link.dispatchEvent(new MouseEvent('click', {
-      bubbles: true,
-      cancelable: true,
-      view: window
-    }));
-    document.getElementById('btn-download').removeChild(download_link);
+    download_link.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      })
+    );
+
+    // Remove link from body
+    document.body.removeChild(download_link);
   }
-  
-    // When the user clicks on start video recording
+
+  // When the user clicks on start video recording
   function startTimer(evt) {
     // console.log(evt);
     evt.preventDefault();
@@ -334,17 +336,21 @@
       video.play();
       // Unmute video on preview
       video.muted = true;
-      // Stop the device streaming
+
+      // Stop Device Streaming
       recorder.stream.stop();
-      // Enable record button again !
+
+      // Enable Start-Recording Button again !
       document.getElementById('btn-start-recording').disabled = false;
+
+      // Enable download button
       document.getElementById('btn-download').disabled = false;
 
     }).catch(function (error) {
       console.error('stopRecording failure', error);
     });
   }, false);
-  
+
   function sendToServer(blob) {
   }
 

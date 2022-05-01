@@ -92,7 +92,7 @@ def Load_Model(Exercise_Models):
 
     Model = load_model(Model_Path)
 
-    print(f"\nModel for Exercise {int(Exercise_Models[3:4]) - 1} Loaded Successfully!!!\n")
+    print(f"\nModel for Exercise {int(Exercise_Models[3:4])} Loaded Successfully!!!\n")
     
     return Model
 
@@ -266,9 +266,9 @@ def Upload_Video(Exercise_Webpage):
         return details(request.form.get('webpage'))
     
 
-@app.route('/display/<filename>')
-def display_video(filename):
-    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+# @app.route('/display/<filename>')
+# def display_video(filename):
+#     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 @app.route('/', methods=['GET'])
 def Index():

@@ -89,10 +89,9 @@ def Load_Model(Exercise_Models):
     os.path.expandvars('models/' + Exercise_Models)))
 
     print(f'\nModel Path: {Model_Path}\n')
-
+    print(f"Model for Exercise {int(Exercise_Models[3:4])} Loaded Successfully!!!\n")
+    
     Model = load_model(Model_Path)
-
-    print(f"\nModel for Exercise {int(Exercise_Models[3:4]) - 1} Loaded Successfully!!!\n")
     
     return Model
 
@@ -160,7 +159,7 @@ def Delete_File(upload_path, filename):
             print(f"The File {filename} does not exist\n")
 
     except:
-        print('File did not get deleted')
+        print('\nFile did not get deleted')
 
 @app.route('/display/About.html', methods=['GET'])
 def About():
@@ -247,7 +246,6 @@ def Upload_Video(Exercise_Webpage):
             
             prediction = pred_video(exercise_dict['Exercise_Models'], upload_path)
             
-            
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']
             return render_template('Error_500.html'),500
@@ -264,9 +262,9 @@ def Upload_Video(Exercise_Webpage):
         return details(request.form.get('webpage'))
     
 
-@app.route('/display/<filename>')
-def display_video(filename):
-    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+# @app.route('/display/<filename>')
+# def display_video(filename):
+#     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 @app.route('/', methods=['GET'])
 def Index():

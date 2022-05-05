@@ -72,14 +72,14 @@ def display_result(result):
     if partialCondition_75:
         return assessmentResult[3]
 
-UPLOAD_FOLDER = 'static/uploads/'
+Upload_Folder = 'static/uploads/'
 
 app = Flask(__name__,
             # static_folder='web_pages/',
             template_folder='web_pages/')
 
 app.secret_key = "secret key"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = Upload_Folder
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the video file to be uploaded
 
 Markdown(app)
@@ -119,7 +119,6 @@ def frames_extraction(video_path):
     video_reader.release()
     return frames_list
 
-
 def pred_video(Exercise_Models, video_file):
     
     Model = Load_Model(Exercise_Models)
@@ -149,6 +148,13 @@ def pred_video(Exercise_Models, video_file):
 
     return display_result(CLASSES_LIST[pred_class])
 
+def flash_prediction(Exercise_Model, filename):
+    upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    print(f'\nUpload Path: {upload_path}\n')
+    prediction = pred_video(Exercise_Model, upload_path)
+    
+    return upload_path, prediction
+    
 def Delete_File(upload_path, filename):
     try:
         if os.path.exists(upload_path):
@@ -158,7 +164,8 @@ def Delete_File(upload_path, filename):
         else:
             print(f"The File {filename} does not exist\n")
 
-    except:
+    except OSError as error:
+        print(f"Error: {error}")
         print('\nFile did not get deleted')
 
 @app.route('/display/About.html', methods=['GET'])
@@ -222,44 +229,57 @@ def Upload_Video(Exercise_Webpage):
         
         file_recording = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
+        
         try:
-            if "_live_recording" in file_recording:
+            if "_live_recording" in file_recording: # Live Recording    
                 index = file_recording.rfind('_')
                 
                 if ".mp4" in file_recording:
                     duration = (file_recording[(index + 1):-4])
-                    filename = filename[:(filename.find('_live_recording'))] + '.mp4'
+                    live_filename = filename[:(filename.find('_live_recording'))] + '.mp4'
                     
                 duration = int(duration)
                 
                 print(f'\nDuration: {duration} seconds\n')
 
-                targetName = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                targetName = os.path.join(app.config['UPLOAD_FOLDER'], live_filename)
                 
                 ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
+                live_upload_path = str(file_recording)
                 
                 print(f'File Name: {filename}')
-                
+                print(f'Live Video File Name: {live_filename}')
                 print(f'Target Name: {targetName}')
+                print(f'\nLive Video File Path: {live_upload_path}')
                 
-            upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                upload_path, prediction = flash_prediction(Exercise_Model = exercise_dict['Exercise_Models'], filename = live_filename)
+                
+                
+                print(prediction)
+
+                flash(prediction[0],prediction[1])                
+                
+                print('Live Recording')
+                Delete_File(live_upload_path, filename)
+                Delete_File(upload_path, live_filename)
+                
+                return details(request.form.get('webpage'))
             
-            prediction = pred_video(exercise_dict['Exercise_Models'], upload_path)
-            
+            else:    # Upload Recording 
+                upload_path, prediction = flash_prediction(Exercise_Model = exercise_dict['Exercise_Models'], filename = filename)
+                                
+                print(prediction)
+
+                flash(prediction[0],prediction[1])
+                
+                Delete_File(upload_path, filename)
+                
+                return details(request.form.get('webpage'))
+   
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']
-            return render_template('Error_500.html'),500
+            return render_template('Error_500.html')
         
-        if "_live_recording" in file_recording:
-            print('Live Recording')
-        
-        print(prediction)
-
-        flash(prediction[0],prediction[1])
-
-        Delete_File(upload_path, filename)
-        
-        return details(request.form.get('webpage'))
     
 
 # @app.route('/display/<filename>')

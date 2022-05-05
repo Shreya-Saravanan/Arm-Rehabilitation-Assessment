@@ -127,7 +127,7 @@
         <p>
           <hr>
           <input type="file" name="file" autocomplete="off" required>
-          <input type="text" style="display:none;" value="{{ Exercise['Exercise_Webpage'] }}" name="webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="webpage">
         </p>
       </dl>
       <p>
@@ -176,7 +176,7 @@
   let durationID;
   var recorder;
   var runtime;
-  var Webpage = "{{ Exercise['Exercise_Webpage'] }}";
+  var Webpage = "{{ Exercise.Exercise_Webpage }}";
   console.log(Webpage);
 
   var upload_blob = null;

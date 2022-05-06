@@ -78,15 +78,68 @@
 
         <ul>Frame Rate : 30 FPS</ul>
 
+        <ul>Video File Type: MP4 - ".mp4"</ul>
+
         <li>Click on the Chose File Button to select the video recording of the exercise you wish to perform and click
           the Upload Button to upload the video recording.</li>
         <li>You can also use this link to record online as per the required specification: <a
             href="https://www.webrtc-experiment.com/RecordRTC/" target="_blank">Record</a></li>
         </p>
-
       </div>
     </div>
 
+    <!-- Live Recording Section -->
+    <hr>
+    <div>
+      <dl>
+        <p>
+          <!-- <input type="file" name="file" autocomplete="off" required> -->
+          <!-- 1. Include action buttons play/stop -->
+          <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
+          <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
+          <button id="btn-download" class="button-download" disabled="disabled"
+            onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
+          <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
+
+        <div id="start-counter"></div>
+        <!--
+      2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
+          -->
+        <hr>
+        <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
+        </p>
+      </dl>
+    </div>
+
+    <div id="recording_result">
+      {% for category, message in messages %}
+      <div class="{{ category }}">
+        <h3>{{ message }}</h3>
+        <hr>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Upload Video Section -->
+
+    <form method="POST" action='/' enctype="multipart/form-data">
+      <dl>
+        <p>
+          <hr>
+          <input type="file" name="file" autocomplete="off" required>
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Models }}" name="Model">
+        </p>
+      </dl>
+      <p>
+        <input type="submit" value="Upload">
+      </p>
+    </form>
+
+    <!--
+  2. Include a video element that will display the current video stream
+  and as well to show the recorded video at the end.
+-->
     <p>
       <hr>
       {% with messages = get_flashed_messages(with_categories = true) %}
@@ -100,55 +153,8 @@
     </ul>
     {% endif %}
     {% endwith %}
+
     </p>
-
-    <!-- Live Recording Section -->
-    <div id="recording_result">
-      {% for category, message in messages %}
-      <div class="{{ category }}">
-        <h3>{{ message }}</h3>
-      </div>
-      {% endfor %}
-    </div>
-
-    <div>
-      <dl>
-        <p>
-          <!-- <input type="file" name="file" autocomplete="off" required> -->
-          <!-- 1. Include action buttons play/stop -->
-          <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
-          <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
-          <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
-        <div id="start-counter"></div>
-        <!--
-      2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
-          -->
-        <hr>
-        <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
-        </p>
-      </dl>
-    </div>
-
-    <!-- Upload Video Section -->
-
-    <form method="POST" action="/" enctype="multipart/form-data">
-      <dl>
-        <p>
-          <hr>
-          <input type="file" name="file" autocomplete="off" required>
-          <input type="text" style="display:none;" value="{{ Exercise['Exercise_Webpage'] }}" name="webpage">
-        </p>
-      </dl>
-      <p>
-        <input type="submit" value="Upload">
-      </p>
-    </form>
-
-    <!--
-  2. Include a video element that will display the current video stream
-  and as well to show the recorded video at the end.
--->
-
 </body>
 
 <!-- 3. Include the RecordRTC library and the latest adapter -->
@@ -162,6 +168,8 @@
   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!-- <script src="{{ url_for('static', filename='scripts/upload.js') }}"></script> -->
+
+
 <script>
   // Store a reference of the preview video element and a global reference to the recorder instance
   var video = document.getElementById('my-preview');
@@ -169,7 +177,7 @@
   let durationID;
   var recorder;
   var runtime;
-  var Webpage = "{{ Exercise['Exercise_Webpage'] }}";
+  var Webpage = "{{ Exercise.Exercise_Webpage }}";
   console.log(Webpage);
 
   var upload_blob = null;
@@ -233,7 +241,7 @@
 
   // Download Blob Function
   function downloadBlob(blob = upload_blob, name = upload_filename) {
-
+    
     // Convert blob into a Blob URL (URL pointing to an object in the browser's memory)
     const blobUrl = URL.createObjectURL(blob);
 
@@ -305,22 +313,25 @@
         formData.append("upload_option", "option");
         formData.append('file', recorder.blob, fileName);
 
+        console.log('Before POST Request')
         try {
-          let res = await axios.post('/Exercise/' + Webpage, formData, {
+          console.log('/Exercise/' + Webpage)
+          let res = await axios.post('/', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           });
           document.getElementById("recording_result").innerHTML = res.data;
           console.log(res);
+          
         } catch (error) {
           console.log(error);
         }
       }
 
-      video.play();
+      //video.play();
       // Unmute video on preview
-      video.muted = true;
+      //video.muted = true;
 
       // Stop Device Streaming
       recorder.stream.stop();

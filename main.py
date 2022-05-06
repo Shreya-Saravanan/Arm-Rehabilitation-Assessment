@@ -182,6 +182,7 @@ exercise_list = convert_to_dict("Exercises.csv")
 @app.route('/Exercise/<Exercise_Webpage>', methods=['GET'])
 def details(Exercise_Webpage):
 
+    print(f'Webpage GET: {Exercise_Webpage}')
     try:
         exercise_dict = exercise_list[Exercise_Webpage]
 
@@ -190,27 +191,20 @@ def details(Exercise_Webpage):
 
     img_link = "images/" + exercise_dict['Image']
     
-    Load_Model(exercise_dict['Exercise_Models'])
-    
     with  open("static/instructions/" + exercise_dict['Instructions'], "r", encoding = 'utf-8') as file:
         instruction =  file.read()
         
     return render_template("Dummy.html", 
-                           Exercise = exercise_dict, 
-                           webpage_title = exercise_dict['Exercise_Title'],
-                           Instructions = instruction, 
-                           Image = img_link)
+                        Exercise = exercise_dict, 
+                        webpage_title = exercise_dict['Exercise_Title'],
+                        Instructions = instruction, 
+                        Image = img_link)
 
+@app.route('/',methods=['POST'])
+def Upload_Video():
+    print(f'Webpage POST: ')
+    print(f"Model: {request.form.get('Model')}")
 
-@app.route('/Exercise/<Exercise_Webpage>',methods=['POST'])
-def Upload_Video(Exercise_Webpage):
-    
-    try:
-        exercise_dict = exercise_list[Exercise_Webpage]
-
-    except:
-        return render_template('Error_500.html')
-    
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
@@ -252,7 +246,7 @@ def Upload_Video(Exercise_Webpage):
                 print(f'Target Name: {targetName}')
                 print(f'\nLive Video File Path: {live_upload_path}')
                 
-                upload_path, prediction = flash_prediction(Exercise_Model = exercise_dict['Exercise_Models'], filename = live_filename)
+                upload_path, prediction = flash_prediction(Exercise_Model = request.form.get('Model'), filename = live_filename)
                 
                 
                 print(prediction)
@@ -263,10 +257,11 @@ def Upload_Video(Exercise_Webpage):
                 Delete_File(live_upload_path, filename)
                 Delete_File(upload_path, live_filename)
                 
-                return details(request.form.get('webpage'))
+                print(f"Live Recording Details: {request.form.get('Webpage')}")
+                return details(request.form.get('Webpage'))
             
             else:    # Upload Recording 
-                upload_path, prediction = flash_prediction(Exercise_Model = exercise_dict['Exercise_Models'], filename = filename)
+                upload_path, prediction = flash_prediction(Exercise_Model = request.form.get('Model'), filename = filename)
                                 
                 print(prediction)
 
@@ -274,14 +269,14 @@ def Upload_Video(Exercise_Webpage):
                 
                 Delete_File(upload_path, filename)
                 
-                return details(request.form.get('webpage'))
+                print(f"Upload Details: {request.form.get('Webpage')}")
+                return details(request.form.get('Webpage'))
    
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']
             return render_template('Error_500.html')
         
     
-
 # @app.route('/display/<filename>')
 # def display_video(filename):
 #     return redirect(url_for('static', filename='uploads/' + filename), code=301)

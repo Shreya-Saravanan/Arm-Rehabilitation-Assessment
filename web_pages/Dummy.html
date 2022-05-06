@@ -122,12 +122,13 @@
 
     <!-- Upload Video Section -->
 
-    <form method="POST" action='/Exercise/{{ Exercise.Exercise_Webpage }}' enctype="multipart/form-data">
+    <form method="POST" action='/' enctype="multipart/form-data">
       <dl>
         <p>
           <hr>
           <input type="file" name="file" autocomplete="off" required>
-          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Models }}" name="Model">
         </p>
       </dl>
       <p>
@@ -312,22 +313,25 @@
         formData.append("upload_option", "option");
         formData.append('file', recorder.blob, fileName);
 
+        console.log('Before POST Request')
         try {
-          let res = await axios.post('/Exercise/' + Webpage, formData, {
+          console.log('/Exercise/' + Webpage)
+          let res = await axios.post('/', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           });
           document.getElementById("recording_result").innerHTML = res.data;
           console.log(res);
+          
         } catch (error) {
           console.log(error);
         }
       }
 
-      video.play();
+      //video.play();
       // Unmute video on preview
-      video.muted = true;
+      //video.muted = true;
 
       // Stop Device Streaming
       recorder.stream.stop();

@@ -7,6 +7,12 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
@@ -18,7 +24,7 @@
 </head>
 
 <body>
-
+  
   <div class="topnav" id="myTopnav">
     <h1 style="color:#178DBB" /> Arm Rehabilitation Exercises
 
@@ -45,116 +51,86 @@
 
   </div>
 
-  <div style="padding-left:16px;">
+  <div class="jumbotron text-center">
     <h1 style="color:rgb(34, 110, 147); text-align: center">{{ Exercise['Exercise_Title'] }}</h1>
+  </div>
+   
+  <img class="bg" src="{{ url_for('static', filename=Image) }}">
 
-    <img class="bg" src="{{ url_for('static', filename=Image) }}">
-
+  <div class="container">
     <div class="row">
-      <div class="column" style="background-color:rgba(147, 186, 30, 0.757);">
+      <div class="col-sm-6" style="background-color:rgba(147, 186, 30, 0.757);">
         <h2 style="text-align:center;">Instructions Section</h2>
-        <p class="Instructions">{{ Instructions|markdown }}</p>
+        <p style="text-align:justify;">{{ Instructions|markdown }}</p>
       </div>
-      <div class="column" style="background-color:rgba(16, 186, 212, 0.454);">
+
+      <div class="col-sm-6" style="background-color:rgba(16, 186, 212, 0.454);">
         <h2 style="text-align:center;">Upload Section</h2>
-        <h3><u>Live Recording:</u></h3>
-        <p>
-          <li>Click the Start-Recording Button to begin the live recording.</li>
-
-          <li>The Live Recording will begin after 10 seconds to allow you to setup yourself in a comfortable position.
-          </li>
-
-          <li>When you wish to end the assessment, please wait for 10 seconds before clicking the Stop-Recording Button.
-          </li>
-
-          <li>If you wish to restart the recording process from the beginning, please click the Restart Button.</li>
-        </p>
-
-        <h3><u>File Upload:</u></h3>
-        <p>
-          <li>Please upload a video file of the following specifications:</li>
-
-        <ul>Resolution : 480p</ul>
-
-        <ul>Frame Rate : 30 FPS</ul>
-
-        <ul>Video File Type: MP4 - ".mp4"</ul>
-
-        <li>Click on the Chose File Button to select the video recording of the exercise you wish to perform and click
-          the Upload Button to upload the video recording.</li>
-        <li>You can also use this link to record online as per the required specification: <a
-            href="https://www.webrtc-experiment.com/RecordRTC/" target="_blank">Record</a></li>
-        </p>
+      <p style="text-align:justify;">{{ Upload_Instruction|markdown }}</p>
       </div>
-    </div>
+  </div>
 
-    <!-- Live Recording Section -->
-    <hr>
-    <div>
-      <dl>
-        <p>
-          <!-- <input type="file" name="file" autocomplete="off" required> -->
-          <!-- 1. Include action buttons play/stop -->
+  <!-- Live Recording Section -->
+  <hr>
+  <div>
+    <dl>
+      <p>
+        <!-- <input type="file" name="file" autocomplete="off" required> -->
+        <!-- 1. Include action buttons play/stop -->
+        <div class="live_recording" style="text-align: center;">
           <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
           <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
           <button id="btn-download" class="button-download" disabled="disabled"
             onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
           <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
+        </div>
 
-        <div id="start-counter"></div>
-        <!--
+
+      <div id="start-counter"></div>
+      <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
           -->
-        <hr>
-        <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
-        </p>
-      </dl>
-    </div>
-
-    <div id="recording_result">
-      {% for category, message in messages %}
-      <div class="{{ category }}">
-        <h3>{{ message }}</h3>
-        <hr>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Upload Video Section -->
-
-    <form method="POST" action='/' enctype="multipart/form-data">
-      <dl>
-        <p>
-          <hr>
-          <input type="file" name="file" autocomplete="off" required>
-          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
-          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Models }}" name="Model">
-        </p>
-      </dl>
-      <p>
-        <input type="submit" value="Upload">
+      <hr>
+      <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
       </p>
-    </form>
+    </dl>
+  </div>
 
-    <!--
+  <!-- Upload Video Section -->
+
+  <form method="POST" action='/' enctype="multipart/form-data">
+    <dl>
+      <p>
+        <hr>
+        <input type="file" name="file" autocomplete="off" required>
+        <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required style="display:none;">
+        <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
+      </p>
+    </dl>
+    <p>
+      <input type="submit" value="Upload" style="text-align: center;">
+    </p>
+  </form>
+
+  <!--
   2. Include a video element that will display the current video stream
   and as well to show the recorded video at the end.
 -->
-    <p>
-      <hr>
-      {% with messages = get_flashed_messages(with_categories = true) %}
-      {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-      <div class="{{ category }}">
-        <h3>{{ message }}</h3>
-      </div>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+  <p>
+    <hr>
+    {% with messages = get_flashed_messages(with_categories = true) %}
+    {% if messages %}
+  <ul>
+    {% for category, message in messages %}
+    <div class="{{ category }}">
+      <h3>{{ message }}</h3>
+    </div>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
 
-    </p>
+  </p>
 </body>
 
 <!-- 3. Include the RecordRTC library and the latest adapter -->
@@ -179,6 +155,9 @@
   var runtime;
   var Webpage = "{{ Exercise.Exercise_Webpage }}";
   console.log(Webpage);
+  var runtime;
+  var Exercise_Model = "{{ Exercise.Exercise_Models }}";
+  console.log(Exercise_Model);
 
   var upload_blob = null;
   var upload_filename = '';
@@ -241,7 +220,7 @@
 
   // Download Blob Function
   function downloadBlob(blob = upload_blob, name = upload_filename) {
-    
+
     // Convert blob into a Blob URL (URL pointing to an object in the browser's memory)
     const blobUrl = URL.createObjectURL(blob);
 
@@ -312,7 +291,9 @@
         formData.append("type", recorder.type);
         formData.append("upload_option", "option");
         formData.append('file', recorder.blob, fileName);
-
+        formData.append('Model', Exercise_Model);
+        formData.append('Webpage', Webpage);
+        
         console.log('Before POST Request')
         try {
           console.log('/Exercise/' + Webpage)
@@ -321,9 +302,10 @@
               'Content-Type': 'multipart/form-data'
             }
           });
-          document.getElementById("recording_result").innerHTML = res.data;
+          document.body.innerHTML = res.data;
+          console.log(res.data);
           console.log(res);
-          
+
         } catch (error) {
           console.log(error);
         }

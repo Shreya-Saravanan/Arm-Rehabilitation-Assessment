@@ -194,23 +194,30 @@ def details(Exercise_Webpage):
     with  open("static/instructions/" + exercise_dict['Instructions'], "r", encoding = 'utf-8') as file:
         instruction =  file.read()
         
+    with  open("static/instructions/Upload Section.md", "r", encoding = 'utf-8') as file:
+        upload_instruction =  file.read()
+        
     return render_template("Dummy.html", 
                         Exercise = exercise_dict, 
                         webpage_title = exercise_dict['Exercise_Title'],
                         Instructions = instruction, 
+                        Upload_Instruction = upload_instruction,
                         Image = img_link)
 
 @app.route('/',methods=['POST'])
 def Upload_Video():
     print(f'Webpage POST: ')
-    print(f"Model: {request.form.get('Model')}")
-
+    
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
 
     file = request.files['file']
-
+    print(f"File: {file}")
+    print(f"Form: {request.form}")
+    Model = request.form['Model']
+    print(f"Model: {Model}")
+    
     if file.filename == '':
         flash('No video selected for uploading')
 
@@ -246,8 +253,7 @@ def Upload_Video():
                 print(f'Target Name: {targetName}')
                 print(f'\nLive Video File Path: {live_upload_path}')
                 
-                upload_path, prediction = flash_prediction(Exercise_Model = request.form.get('Model'), filename = live_filename)
-                
+                upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = live_filename)
                 
                 print(prediction)
 
@@ -257,11 +263,11 @@ def Upload_Video():
                 Delete_File(live_upload_path, filename)
                 Delete_File(upload_path, live_filename)
                 
-                print(f"Live Recording Details: {request.form.get('Webpage')}")
-                return details(request.form.get('Webpage'))
+                print(f"Live Recording Details: {request.form['Webpage']}")
+                return details(request.form['Webpage'])
             
             else:    # Upload Recording 
-                upload_path, prediction = flash_prediction(Exercise_Model = request.form.get('Model'), filename = filename)
+                upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = filename)
                                 
                 print(prediction)
 
@@ -269,8 +275,8 @@ def Upload_Video():
                 
                 Delete_File(upload_path, filename)
                 
-                print(f"Upload Details: {request.form.get('Webpage')}")
-                return details(request.form.get('Webpage'))
+                print(f"Upload Details: {request.form['Webpage']}")
+                return details(request.form['Webpage'])
    
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']

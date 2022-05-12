@@ -1,7 +1,15 @@
 /* Upload Buttons Styling */
-body {margin:0;font-family:Arial}
+body {
+  margin: 0;
+  font-family: Arial
+}
 
-.btn, .button-start:link,  .button-restart:link, .btn, .button-start,  .button-restart {
+.btn,
+.button-start:link,
+.button-restart:link,
+.btn,
+.button-start,
+.button-restart {
   background-color: teal;
   color: white;
   padding: 14px 28px;
@@ -12,15 +20,23 @@ body {margin:0;font-family:Arial}
   /* align-items: center; */
 }
 
-.button-start:hover{
+.button-start:hover {
   background-color: rgb(42, 187, 23);
 }
-.btn:hover, .button-restart:hover, .btn:active, .button-start:active, .button-restart:active {
+
+.btn:hover,
+.button-restart:hover,
+.btn:active,
+.button-start:active,
+.button-restart:active {
   background-color: rgb(23, 141, 187);
 }
 
 
-.button-stop, .button-stop:link, .button-stop, .button-stop:visited{
+.button-stop,
+.button-stop:link,
+.button-stop,
+.button-stop:visited {
   background-color: rgb(119, 42, 32);
   color: white;
   padding: 14px 28px;
@@ -30,11 +46,15 @@ body {margin:0;font-family:Arial}
 
 }
 
-.button-stop:hover, .button-stop:active{
+.button-stop:hover,
+.button-stop:active {
   background-color: rgb(233, 36, 10);
 }
 
-.button-download, .button-download:link, .button-download, .button-download:visited{
+.button-download,
+.button-download:link,
+.button-download,
+.button-download:visited {
   background-color: rgb(119, 42, 32);
   color: white;
   padding: 14px 28px;
@@ -44,7 +64,45 @@ body {margin:0;font-family:Arial}
 
 }
 
-.button-download:hover, .button-download:active{
+.button-download:hover,
+.button-download:active {
   background-color: rgb(86, 52, 200);
+}
+
+/* Email */
+* {
+  box-sizing: border-box;
+}
+
+input[type=text],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: rgb(4, 170, 109);
+  color: rgb(255, 255, 255);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: rgb(69, 160, 73);
+}
+
+.container {
+  border-radius: 5px;
+  background-color: rgba(242, 242, 242, 0.606);
+  padding: 20px;
 }
 

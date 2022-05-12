@@ -24,7 +24,7 @@
 </head>
 
 <body>
-  
+
   <div class="topnav" id="myTopnav">
     <h1 style="color:#178DBB" /> Arm Rehabilitation Exercises
 
@@ -54,7 +54,7 @@
   <div class="jumbotron text-center">
     <h1 style="color:rgb(34, 110, 147); text-align: center">{{ Exercise['Exercise_Title'] }}</h1>
   </div>
-   
+
   <img class="bg" src="{{ url_for('static', filename=Image) }}">
 
   <div class="container">
@@ -66,17 +66,17 @@
 
       <div class="col-sm-6" style="background-color:rgba(16, 186, 212, 0.454);">
         <h2 style="text-align:center;">Upload Section</h2>
-      <p style="text-align:justify;">{{ Upload_Instruction|markdown }}</p>
+        <p style="text-align:justify;">{{ Upload_Instruction|markdown }}</p>
       </div>
-  </div>
+    </div>
 
-  <!-- Live Recording Section -->
-  <hr>
-  <div>
-    <dl>
-      <p>
-        <!-- <input type="file" name="file" autocomplete="off" required> -->
-        <!-- 1. Include action buttons play/stop -->
+    <!-- Live Recording Section -->
+    <hr>
+    <div>
+      <dl>
+        <p>
+          <!-- <input type="file" name="file" autocomplete="off" required> -->
+          <!-- 1. Include action buttons play/stop -->
         <div class="live_recording" style="text-align: center;">
           <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
           <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
@@ -86,56 +86,74 @@
         </div>
 
 
-      <div id="start-counter"></div>
-      <!--
+        <div id="start-counter"></div>
+        <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
           -->
-      <hr>
-      <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
-      </p>
-    </dl>
-  </div>
-
-  <!-- Upload Video Section -->
-
-  <form method="POST" action='/' enctype="multipart/form-data">
-    <dl>
-      <p>
         <hr>
-        <input type="file" name="file" autocomplete="off" required>
-        <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required style="display:none;">
-        <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
-      </p>
-    </dl>
-    <p>
-      <input type="submit" value="Upload" style="text-align: center;">
-    </p>
-  </form>
+        <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
+        </p>
+      </dl>
+    </div>
 
-  <!--
+    <!-- Upload Video Section -->
+
+    <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
+      <dl>
+        <p>
+          <hr>
+          <input type="file" name="file" autocomplete="off" required>
+          <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required
+            style="display:none;">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Title }}" name="Exercise_Name">
+        </p>
+      </dl>
+      <p>
+        <input type="submit" value="Upload" style="text-align: center;">
+      </p>
+    </form>
+
+    <!-- Sending a mail containing assessment results -->
+    <h3>Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} </h3>
+
+    <div class="container">
+      <!-- <form method="POST" action='/' enctype="multipart/form-data"></form> -->
+      <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
+        <label for="fname">Name</label>
+        <input type="text" id="Name" name="Recipient_Name" placeholder="Your Name...">
+
+        <label for="email_id">Email ID</label>
+        <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Email ID">
+
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <!--
   2. Include a video element that will display the current video stream
   and as well to show the recorded video at the end.
 -->
-  <p>
-    <hr>
-    {% with messages = get_flashed_messages(with_categories = true) %}
-    {% if messages %}
-  <ul>
-    {% for category, message in messages %}
-    <div class="{{ category }}">
-      <h3>{{ message }}</h3>
-    </div>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
+    <p>
+      <hr>
+      {% with messages = get_flashed_messages(with_categories = true) %}
+      {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+      <div class="{{ category }}">
+        <h3>{{ message }}</h3>
+      </div>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 
-  </p>
+    </p>
+
+
 </body>
 
 <!-- 3. Include the RecordRTC library and the latest adapter -->
 <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
-
 
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
@@ -155,7 +173,10 @@
   var runtime;
   var Webpage = "{{ Exercise.Exercise_Webpage }}";
   console.log(Webpage);
-  var runtime;
+
+  var Exercise_Name = "{{ Exercise.Exercise_Title }}";
+  console.log(Exercise_Name);
+
   var Exercise_Model = "{{ Exercise.Exercise_Models }}";
   console.log(Exercise_Model);
 
@@ -293,11 +314,11 @@
         formData.append('file', recorder.blob, fileName);
         formData.append('Model', Exercise_Model);
         formData.append('Webpage', Webpage);
-        
+        formData.append('Exercise_Name', Exercise_Name);
+
         console.log('Before POST Request')
         try {
-          console.log('/Exercise/' + Webpage)
-          let res = await axios.post('/', formData, {
+          let res = await axios.post('/Exercise/{{ Exercise["Exercise_Webpage"] }}', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

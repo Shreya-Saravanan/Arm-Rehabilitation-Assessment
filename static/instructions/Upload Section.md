@@ -1,4 +1,4 @@
-### Live-Recording
+**Live-Recording**
 
 - Click the Start-Recording Button to begin the live recording.
 
@@ -8,15 +8,15 @@
 
 - If you wish to restart the recording process from the beginning, please click the Restart Button.
 
-### File Upload
+**File Upload**
 
 - Please upload a video file of the following specifications:
 
-	- Resolution : 480p
+  - Resolution : 480p
 
-	- Frame Rate : 30 FPS
+  - Frame Rate : 30 FPS
 
-	- Video File Type: MP4 - ".mp4"
+  - Video File Type: MP4 - ".mp4"
 
 - Click on the Chose File Button to select the video recording of the exercise you wish to perform and click the Upload Button to upload the video recording.
 

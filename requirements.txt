@@ -1,5 +1,10 @@
 flask
 flask-crontab
+apscheduler
+Flask-Mail
+ssl
+yagmail
+keyring
 opencv-python
 numpy
 tensorflow

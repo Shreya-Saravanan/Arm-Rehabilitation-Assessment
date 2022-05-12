@@ -1,51 +1,69 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>About</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  
-  <link href="{{ url_for('static', filename='css/About.css') }}" rel="stylesheet" >
+<html lang="en">
 
+<head>
+
+  <title>{{webpage_title}}</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+  <!-- Importing CSS Files from CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Importing JavaScript Files from CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <!-- Importing Local CSS Files and Favicons -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.min.css') }}">
+  <link href="{{ url_for('static', filename='css/About.css') }}" rel="stylesheet">
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-globe-120.png') }}">
 
 </head>
 
 <body>
 
-<div class="topnav" id="myTopnav">
-  <h1 style="color:rgb(23, 141, 187)"/> Arm Rehabilitation Exercises
-
-  <a href="/display/About.html">About</a>
-
-  <div class="dropdown">
-    <button class="dropbtn"><a href="/display/Exercises.html"/>Exercises
-      <i class="fa fa-caret-down"></i>
-    </button>
-    
-    <div class="dropdown-content">
-      <a href="/Exercise/Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
-      <a href="/Exercise/Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
-      <a href="/Exercise/Extending_the_Elbow_1.html">Extending the Elbow - 1</a>
-      <a href="/Exercise/Extending_the_Elbow_2.html">Extending the Elbow - 2</a>
-      <a href="/Exercise/Turning_the_Forearm.html">Turning the Forearm</a>
-      <a href="/Exercise/Extending_the_Wrist.html">Extending the Wrist</a>
-      <a href="/Exercise/Extending_the_Fingers.html">Extending the Fingers</a>
-      <a href="/Exercise/Extending_the_Thumb.html">Extending the Thumb</a>
+  <!-- Start: Navbar Right Links (Dark) -->
+  <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
+    <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span
+          class="fs-4 text-primary">Arm Rehabilitation Exercise Assessment</span></a><button data-bs-toggle="collapse"
+        class="navbar-toggler" data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span
+          class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse fs-4" id="navcol-5">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+          <li class="nav-item dropdown visible"><a class="dropdown-toggle nav-link" aria-expanded="false"
+              data-bs-toggle="dropdown" href="/display/Exercises.html">Exercises</a>
+            <div class="dropdown-menu dropdown-menu-dark border rounded">
+              <a href="/Exercise/Arm_Placed_in_the_Front.html"><br>Arm Placed in the Front<br></a>
+              <a href="/Exercise/Arm_Placed_on_its_Side.html"><br>Arm Placed on its Side<br></a>
+              <a href="/Exercise/Extending_the_Elbow_1.html"><br>Extending the Elbow - 1<br></a>
+              <a href="/Exercise/Extending_the_Elbow_2.html"><br>Extending the Elbow - 2<br></a>
+              <a href="/Exercise/Turning_the_Forearm.html"><br>Turning the Forearm<br></a>
+              <a href="/Exercise/Extending_the_Wrist.html"><br>Extending the Wrist<br></a>
+              <a href="/Exercise/Extending_the_Fingers.html"><br>Extending the Fingers<br></a>
+              <a href="/Exercise/Extending_the_Thumb.html"><br>Extending the Thumb<br></a>
+            </div>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/display/About.html">About</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </nav>
+  <!-- End: Navbar Right Links (Dark) -->
 
-  <a href="/" class="active">Home</a>
   
-</div>
-
-<div style="padding-left:16px;">
-  <h1 style="color:#226e93; text-align: center">About</h1>
+  <div style="padding-left:16px;">
+    <h1 style="color:#226e93; text-align: center">About</h1>
 
 
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.min.js') }}"></script>
+
 </html>
-
-

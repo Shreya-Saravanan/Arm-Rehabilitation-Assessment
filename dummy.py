@@ -38,50 +38,44 @@ def convert_to_dict(filename):
 
 def display_result(result):
     
-    completeCondition = ("Complete" in result)
-    incompleteCondition = ("Incomplete" in result)
+    completeCondition = ("100" in result)
     partialCondition_25 = ("25" in result)
     partialCondition_50 = ("50" in result)
     partialCondition_75 = ("75" in result)
     
     Messages = ["It's Alright, Don't Give Up. You can do this!\nYour Recovery Rate is less than 25%.", 
-                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25% but less than 50%!",
-                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50%!!",
-                "You're Almost there. Hang in There!!!\nYour Recovery Rate is atleast 75%!!!",
-                "Yay!!!! You have nearly Recovered successfully!!!!"]
+                "You've got this. Just a little more effort\nYour Recovery Rate is atleast 25 - 50%!",
+                "You're Halfway through this. Don't Give Up Now!!!\nYour Recovery Rate is atleast 50 - 75%!!",
+                "Yay!!!! You have nearly Recovered successfully!!!!\nYour Recovery Rate is more than 75%!!! "]
     
-    predictionResult = {Messages[0]:'result_0',
-                        Messages[1]:'result_25',
-                        Messages[2]:'result_50',
-                        Messages[3]:'result_75',
+    predictionResult = {Messages[0]:'result_25',
+                        Messages[1]:'result_50',
+                        Messages[2]:'result_75',
                         Messages[-1]:'result_100'}
+                        
     
     assessmentResult = list(predictionResult.items())
     
     if completeCondition:
         return assessmentResult[-1]
     
-    if incompleteCondition:
+    if partialCondition_25:
         return assessmentResult[0]
     
-    if partialCondition_25:
+    if partialCondition_50:
         return assessmentResult[1]
     
-    if partialCondition_50:
-        return assessmentResult[2]
-    
     if partialCondition_75:
-        return assessmentResult[3]
-
-Upload_Folder = 'static/uploads/'
+        return assessmentResult[2]
 
 app = Flask(__name__,
             # static_folder='web_pages/',
             template_folder='web_pages/')
 
-app.secret_key = "secret key"
-app.config['UPLOAD_FOLDER'] = Upload_Folder
+app.secret_key = os.urandom(24).hex()
+app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the video file to be uploaded
+
 
 admin_email = 'fyp.send.email.web.app.flask@gmail.com'
 recipient_name = ''
@@ -94,15 +88,14 @@ def Load_Model(Exercise_Models):
     os.path.expandvars('models/' + Exercise_Models)))
 
     print(f'\nModel Path: {Model_Path}\n')
-    print(f"Model for Exercise {int(Exercise_Models[3:4])} Loaded Successfully!!!\n")
-    
     Model = load_model(Model_Path)
+    print(f"Model for Exercise {int(Exercise_Models[9:10])} Loaded Successfully!!!\n")
     
     return Model
 
 def frames_extraction(video_path):
     SEQUENCE_LENGTH = 40
-    IMAGE_HEIGHT, IMAGE_WIDTH = 64, 64
+    IMAGE_HEIGHT, IMAGE_WIDTH = 70, 70
 
     frames_list = []
     video_reader = cv2.VideoCapture(video_path)
@@ -130,27 +123,22 @@ def pred_video(Exercise_Models, video_file):
     
     SEQUENCE_LENGTH = 40
     
-    CLASSES_LIST = ["Exercise 1 - Arm Placed in the Front - Complete", "Exercise 1 - Arm Placed in the Front - Incomplete",
-                    "Exercise 2 - Arm Placed on its Side - Complete", "Exercise 2 - Arm Placed on its Side - Incomplete",
-                    "Exercise 4 - Extending the Elbow_1 - Complete", "Exercise 4 - Extending the Elbow_1 - Incomplete",
-                    "Exercise 5 - Extending the Elbow_2 - Complete", "Exercise 5 - Extending the Elbow_2 - Incomplete",
-                    "Exercise 6 - Turning the Forearm - Complete", "Exercise 6 - Turning the Forearm - Incomplete",
-                    "Exercise 7 - Extending the Wrist - Complete", "Exercise 7 - Extending the Wrist - Incomplete",
-                    "Exercise 8 - Extending the Fingers - Complete", "Exercise 8 - Extending the Fingers - Incomplete",
-                    "Exercise 9 - Extending the Thumb - Complete", "Exercise 9 - Extending the Thumb - Incomplete"]
+    CLASSES_LIST = ["Complete_25", "Complete_50", "Complete_75", "Complete_100"]
 
     features = []
+
     frames = frames_extraction(video_file)
 
     if len(frames) == SEQUENCE_LENGTH:
         features.append(frames)
 
     features = np.asarray(features)
-    
+
     pred_vector = Model.predict(features)
     pred_vec = pred_vector[0].tolist()
     pred_class = pred_vec.index(max(pred_vec))
 
+    print(CLASSES_LIST[pred_class]) 
     return display_result(CLASSES_LIST[pred_class])
 
 def flash_prediction(Exercise_Model, filename):
@@ -173,7 +161,7 @@ def Delete_File(upload_path, filename):
         print(f"Error: {error}")
         print('\nFile did not get deleted')
 
-def SendEmail(recipient_name, Exercise,prediction, mailing_list):
+def SendEmail(recipient_name, mailing_list, Exercise, prediction):
     
     if recipient_name == '':
         recipient_name = 'User'
@@ -228,9 +216,7 @@ def details(Exercise_Webpage):
 @app.route('/Exercise/<Exercise_Webpage>',methods=['POST'])
 def Upload_Video(Exercise_Webpage):
     print(f"Webpage POST: {request.form['Webpage']}")
-    
-    recipient_name, mailing_list = Email()
-    
+
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
@@ -289,21 +275,55 @@ def Upload_Video(Exercise_Webpage):
                 Delete_File(upload_path, live_filename)
                 
                 print(f"Live Recording Details: {request.form['Webpage']}")
+                
+                SendEmail('', admin_email, request.form['Exercise_Name'], prediction[0])
             
             else:    # Upload Recording 
-                upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = filename)
-                                
-                print(prediction)
+                if "_upload_recording" in file_recording: # Live Recording    
+                    index = file_recording.rfind('_')
+                    
+                    if ".mp4" in file_recording:
+                        duration = (file_recording[(index + 1):-4])
+                        live_filename = filename[:(filename.find('_upload_recording'))] + '.mp4'
+                        
+                    duration = int(duration)
+                    
+                    print(f'\nDuration: {duration} seconds\n')
 
-                flash(prediction[0],prediction[1])
+                    targetName = os.path.join(app.config['UPLOAD_FOLDER'], live_filename)
+                    
+                    ffmpeg_extract_subclip(file_recording, 0, (duration - 10), targetname = targetName)
+                    live_upload_path = str(file_recording)
+                    
+                    print(f'File Name: {filename}')
+                    print(f'Live Video File Name: {live_filename}')
+                    print(f'Target Name: {targetName}')
+                    print(f'\nLive Video File Path: {live_upload_path}')
+                    
+                    upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = live_filename)
+                    
+                    print(prediction)
+
+                    flash(prediction[0],prediction[1])                
+                    
+                    print('Live Recording')
+                    Delete_File(live_upload_path, filename)
+                    Delete_File(upload_path, live_filename)
                 
-                Delete_File(upload_path, filename)
+                else:
+                    upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = filename)
+                                    
+                    print(prediction)
+
+                    flash(prediction[0],prediction[1])
+                    
+                    Delete_File(upload_path, filename)
                 
+                recipient_name, mailing_list = Email()
                 
                 print(f"Upload Details: {request.form['Webpage']}")
 
-
-            SendEmail(recipient_name, request.form['Exercise_Name'], prediction[0], mailing_list)
+                SendEmail(recipient_name, mailing_list, request.form['Exercise_Name'], prediction[0])
             
             return details(request.form['Webpage'])
 
@@ -322,43 +342,6 @@ def Email():
         
     return recipient_name, mailing_list
         
-     
-
-# @app.after_request
-# def after_request_func(response):
-#     print("after_request executing!")
-#     return response    
-# @app.route('/display/<filename>')
-# def display_video(filename):
-#     return redirect(url_for('static', filename='uploads/' + filename), code=301)
-
-@app.route('/', methods=['GET'])
-def Index():
-    return render_template('Index.html')
-
-@app.errorhandler(403)
-def Forbidden(e):
-    return render_template('Error_403.html'),403
-
-@app.errorhandler(404)
-def Not_Found(e):
-    return render_template('Error_404.html'),404
-
-@app.errorhandler(408)
-def Server_Timeout(e):
-    return render_template('Error_408.html'),408
-
-@app.errorhandler(500)
-def Internal_Server_Error(e):
-    return render_template('Error_500.html'),500
-
-if __name__ == "__main__":
-    
-    app.run(debug = True)
-
-# @app.route('/display/<filename>')
-# def display_video(filename):
-#     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 @app.route('/', methods=['GET'])
 def Index():

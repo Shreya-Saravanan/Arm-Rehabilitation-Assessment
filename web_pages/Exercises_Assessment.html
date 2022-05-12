@@ -1,73 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="utf-8">
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  
   <title>{{webpage_title}}</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+  
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
 
-  <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Centered-Brand.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.min.css') }}">
+
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
 </head>
 
 <body>
-  
-  <div class="topnav" id="myTopnav">
-    <h1 style="color:#178DBB" /> Arm Rehabilitation Exercises
-
-    <a href="/display/About.html">About</a>
-
-    <div class="dropdown">
-      <button class="dropbtn"><a href="/display/Exercises.html" />Exercises
-        <i class="fa fa-caret-down"></i>
-      </button>
-
-      <div class="dropdown-content">
-        <a href="/Exercise/Arm_Placed_in_the_Front.html">Arm Placed in the Front</a>
-        <a href="/Exercise/Arm_Placed_on_its_Side.html">Arm Placed on its Side</a>
-        <a href="/Exercise/Extending_the_Elbow_1.html">Extending the Elbow - 1</a>
-        <a href="/Exercise/Extending_the_Elbow_2.html">Extending the Elbow - 2</a>
-        <a href="/Exercise/Turning_the_Forearm.html">Turning the Forearm</a>
-        <a href="/Exercise/Extending_the_Wrist.html">Extending the Wrist</a>
-        <a href="/Exercise/Extending_the_Fingers.html">Extending the Fingers</a>
-        <a href="/Exercise/Extending_the_Thumb.html">Extending the Thumb</a>
+  <!-- Start: Navbar Right Links (Dark) -->
+  <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
+    <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span
+          class="fs-4 text-primary">Arm Rehabilitation Exercise Assessment</span></a><button data-bs-toggle="collapse"
+        class="navbar-toggler" data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span
+          class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse fs-4" id="navcol-5">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+          <li class="nav-item dropdown visible"><a class="dropdown-toggle nav-link" aria-expanded="false"
+              data-bs-toggle="dropdown" href="/display/Exercises.html">Exercises</a>
+            <div class="dropdown-menu dropdown-menu-dark border rounded">
+              <a href="/Exercise/Arm_Placed_in_the_Front.html"><br>Arm Placed in the Front<br></a>
+              <a href="/Exercise/Arm_Placed_on_its_Side.html"><br>Arm Placed on its Side<br></a>
+              <a href="/Exercise/Extending_the_Elbow_1.html"><br>Extending the Elbow - 1<br></a>
+              <a href="/Exercise/Extending_the_Elbow_2.html"><br>Extending the Elbow - 2<br></a>
+              <a href="/Exercise/Turning_the_Forearm.html"><br>Turning the Forearm<br></a>
+              <a href="/Exercise/Extending_the_Wrist.html"><br>Extending the Wrist<br></a>
+              <a href="/Exercise/Extending_the_Fingers.html"><br>Extending the Fingers<br></a>
+              <a href="/Exercise/Extending_the_Thumb.html"><br>Extending the Thumb<br></a>
+            </div>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/display/About.html">About</a></li>
+        </ul>
       </div>
     </div>
+  </nav>
+  <!-- End: Navbar Right Links (Dark) -->
 
-    <a href="/" class="active">Home</a>
-
+  <!-- Instructions Section -->
+  <div>
+    <ul class="nav nav-tabs nav-fill" role="tablist">
+      <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="tab"
+          href="#tab-1">Exercise Instructions</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-2">Upload
+          Instructions</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="tab-1" class="tab-pane active" role="tabpanel" style="background-color:rgba(147, 186, 30, 0.757);">
+        <p><br />{{ Instructions|markdown }}<br /></p>
+      </div>
+      <div id="tab-2" class="tab-pane" role="tabpanel" style="background-color:rgba(16, 186, 212, 0.454);">
+        <p><br />{{ Upload_Instruction|markdown }}<br /></p>
+      </div>
+    </div>
   </div>
 
-  <div class="jumbotron text-center">
-    <h1 style="color:rgb(34, 110, 147); text-align: center">{{ Exercise['Exercise_Title'] }}</h1>
-  </div>
-   
-  <img class="bg" src="{{ url_for('static', filename=Image) }}">
+  <!-- Sending a mail containing assessment results -->
+  <h3 style="text-align:center;">Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} </h3>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6" style="background-color:rgba(147, 186, 30, 0.757);">
-        <h2 style="text-align:center;">Instructions Section</h2>
-        <p style="text-align:justify;">{{ Instructions|markdown }}</p>
-      </div>
+  <!-- Upload Video Section -->
 
-      <div class="col-sm-6" style="background-color:rgba(16, 186, 212, 0.454);">
-        <h2 style="text-align:center;">Upload Section</h2>
-      <p style="text-align:justify;">{{ Upload_Instruction|markdown }}</p>
-      </div>
+  <div style="text-align:justify;">
+    <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
+      <dl>
+        <p>
+          <hr>
+  
+          <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required
+            style="display:none;">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Title }}" name="Exercise_Name">
+          <label for="Name">Name</label>
+          <input type="text" id="Name" name="Recipient_Name" placeholder="Your Name...">
+  
+          <label for="email_id">Email ID</label>
+          <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Email ID">
+          <hr>
+          <input type="file" name="file" autocomplete="off" required>
+        </p>
+      </dl>
+      <p>
+        <input type="submit" value="Submit" style="text-align: center;">
+      </p>
+    </form>
   </div>
 
   <!-- Live Recording Section -->
@@ -77,16 +108,19 @@
       <p>
         <!-- <input type="file" name="file" autocomplete="off" required> -->
         <!-- 1. Include action buttons play/stop -->
-        <div class="live_recording" style="text-align: center;">
-          <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start Recording</button>
-          <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
-          <button id="btn-download" class="button-download" disabled="disabled"
-            onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
-          <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
-        </div>
+      <div class="live_recording" style="text-align: center;">
+        <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start
+          Recording</button>
+        <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
+        <button id="btn-download" class="button-download" disabled="disabled"
+          onclick="downloadBlob(upload_blob, upload_filename)">Download</button>
+        <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
+      </div>
 
 
-      <div id="start-counter"></div>
+      <h2 style="text-align:center;">
+        <div id="start-counter"></div>
+      </h2>
       <!--
       2. Include a video element that will display the current video stream and as well to show the recorded video at the end.
           -->
@@ -96,26 +130,7 @@
     </dl>
   </div>
 
-  <!-- Upload Video Section -->
-
-  <form method="POST" action='/' enctype="multipart/form-data">
-    <dl>
-      <p>
-        <hr>
-        <input type="file" name="file" autocomplete="off" required>
-        <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required style="display:none;">
-        <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
-      </p>
-    </dl>
-    <p>
-      <input type="submit" value="Upload" style="text-align: center;">
-    </p>
-  </form>
-
-  <!--
-  2. Include a video element that will display the current video stream
-  and as well to show the recorded video at the end.
--->
+  <!-- Flash Messages -->
   <p>
     <hr>
     {% with messages = get_flashed_messages(with_categories = true) %}
@@ -131,209 +146,25 @@
   {% endwith %}
 
   </p>
+
+
+  <!-- Upload Recording -->
+  <script src="/static/js/Upload_Recorder.js"></script>
+  <!-- Live Recording -->
+  <script src="/static/js/Live_Recorder.js"></script>
+
+  <script src="/static/js/bootstrap.min.js"></script>
+
+  <script src="/static/js/bs-init.js"></script>
+
+  <!-- Include the RecordRTC library and the latest adapter -->
+  <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+    integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
-
-<!-- 3. Include the RecordRTC library and the latest adapter -->
-<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
-
-
-<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
-  integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- <script src="{{ url_for('static', filename='scripts/upload.js') }}"></script> -->
-
-
-<script>
-  // Store a reference of the preview video element and a global reference to the recorder instance
-  var video = document.getElementById('my-preview');
-  let counterUI = document.getElementById("start-counter");
-  let durationID;
-  var recorder;
-  var runtime;
-  var Webpage = "{{ Exercise.Exercise_Webpage }}";
-  console.log(Webpage);
-  var runtime;
-  var Exercise_Model = "{{ Exercise.Exercise_Models }}";
-  console.log(Exercise_Model);
-
-  var upload_blob = null;
-  var upload_filename = '';
-
-  function convertTime(seconds) {
-    runtime = seconds;
-
-    var sec_num = parseInt(seconds); // don't forget the second param
-
-    var hours = Math.floor(sec_num / 3600);
-    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-
-    var seconds = sec_num - (hours * 3600) - (minutes * 60);
-    console.log(minutes, seconds);
-
-    if (minutes < 10) { minutes = "0" + minutes; }
-    if (seconds < 10) { seconds = "0" + seconds; }
-
-    return minutes + ':' + seconds;
-  };
-
-  function startRecording() {
-    // Disable start recording button
-    // Request access to the media devices
-    navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: true
-    }).then(function (stream) {
-      // Display a live preview on the video element of the page
-      setSrcObject(stream, video);
-      var seconds = 0
-      durationID = setInterval(() => {
-        counterUI.innerHTML = convertTime(seconds)
-        seconds++
-      }, 1000);
-      // Start to display the preview on the video element
-      // and mute the video to disable the echo issue !
-      video.play();
-      video.muted = true;
-      // Initialize the recorder
-      recorder = new RecordRTCPromisesHandler(stream, {
-        mimeType: 'video/webm',
-        bitsPerSecond: 128000
-      });
-      // Start recording the video
-      recorder.startRecording().then(function () {
-        console.info('Recording video ...');
-      }).catch(function (error) {
-        console.error('Cannot start video recording: ', error);
-      });
-      // release stream on stopRecording
-      recorder.stream = stream;
-      // Enable stop recording button
-      document.getElementById('btn-stop-recording').disabled = false;
-    }).catch(function (error) {
-      console.error("Cannot access media devices: ", error);
-    });
-  }
-
-
-  // Download Blob Function
-  function downloadBlob(blob = upload_blob, name = upload_filename) {
-
-    // Convert blob into a Blob URL (URL pointing to an object in the browser's memory)
-    const blobUrl = URL.createObjectURL(blob);
-
-    // Create a link element
-    const download_link = document.createElement("a");
-
-    // Set link's href to point to the Blob URL
-    download_link.href = blobUrl;
-    download_link.download = name;
-
-    // Append link to the body
-    document.body.appendChild(download_link);
-
-    // Dispatch click event on the link
-    // This is necessary as link.click() does not work on the latest firefox
-    download_link.dispatchEvent(
-      new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      })
-    );
-
-    // Remove link from body
-    document.body.removeChild(download_link);
-  }
-
-  // When the user clicks on start video recording
-  function startTimer(evt) {
-    // console.log(evt);
-    evt.preventDefault();
-    document.getElementById("btn-start-recording").disabled = true
-    let counter = 2;
-    let intervalID = setInterval(() => {
-      if (counter == -1) {
-        counterUI.innerHTML = "";
-        clearInterval(intervalID);
-        startRecording();
-        return;
-      }
-      counterUI.innerHTML = counter;
-      counter--;
-    }, 1000);
-    return false;
-  }
-  // When the user clicks on Stop video recording
-  document.getElementById('btn-stop-recording').addEventListener("click", function () {
-    this.disabled = true;
-    clearInterval(durationID)
-    counterUI.innerHTML = ''
-    recorder.stopRecording().then(async function () {
-      console.info('stopRecording success');
-
-      if (recorder.blob) {
-        var blob = URL.createObjectURL(recorder.blob);
-        console.log(blob);
-
-        var fileType = 'video';
-        var fileName = ((new Date()).toISOString()) + '_live_recording_' + runtime + '.mp4';
-
-        upload_blob = recorder.blob;
-        upload_filename = fileName;
-
-        var formData = new FormData();
-        var boundary = String(Math.random()).slice(2);
-
-        formData.append("event_id", window.event_id);
-        formData.append("type", recorder.type);
-        formData.append("upload_option", "option");
-        formData.append('file', recorder.blob, fileName);
-        formData.append('Model', Exercise_Model);
-        formData.append('Webpage', Webpage);
-        
-        console.log('Before POST Request')
-        try {
-          console.log('/Exercise/' + Webpage)
-          let res = await axios.post('/', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          });
-          document.body.innerHTML = res.data;
-          console.log(res.data);
-          console.log(res);
-
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      //video.play();
-      // Unmute video on preview
-      //video.muted = true;
-
-      // Stop Device Streaming
-      recorder.stream.stop();
-
-      // Enable Start-Recording Button again !
-      document.getElementById('btn-start-recording').disabled = false;
-
-      // Enable download button
-      document.getElementById('btn-download').disabled = false;
-
-    }).catch(function (error) {
-      console.error('stopRecording failure', error);
-    });
-  }, false);
-
-  function sendToServer(blob) {
-  }
-
-
-
-</script>
 
 </html>

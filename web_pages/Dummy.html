@@ -69,7 +69,34 @@
         <p style="text-align:justify;">{{ Upload_Instruction|markdown }}</p>
       </div>
     </div>
+    <!-- Sending a mail containing assessment results -->
+    <h3>Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} </h3>
 
+    <!-- Upload Video Section -->
+
+    <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
+      <dl>
+        <p>
+          <hr>
+          
+          <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required
+            style="display:none;">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
+          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Title }}" name="Exercise_Name">
+          <label for="Name">Name</label>
+          <input type="text" id="Name" name="Recipient_Name" placeholder="Your Name...">
+  
+          <label for="email_id">Email ID</label>
+          <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Email ID">
+          <hr>
+          <input type="file" name="file" autocomplete="off" required>
+        </p>
+      </dl>
+      <p>
+        <input type="submit" value="Submit" style="text-align: center;">
+      </p>
+    </form>
+    
     <!-- Live Recording Section -->
     <hr>
     <div>
@@ -96,43 +123,6 @@
       </dl>
     </div>
 
-    <!-- Upload Video Section -->
-
-    <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
-      <dl>
-        <p>
-          <hr>
-          <input type="file" name="file" autocomplete="off" required>
-          <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required
-            style="display:none;">
-          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
-          <input type="text" style="display:none;" value="{{ Exercise.Exercise_Title }}" name="Exercise_Name">
-        </p>
-      </dl>
-      <p>
-        <input type="submit" value="Upload" style="text-align: center;">
-      </p>
-    </form>
-
-    <!-- Sending a mail containing assessment results -->
-    <h3>Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} </h3>
-
-    <div class="container">
-      <!-- <form method="POST" action='/' enctype="multipart/form-data"></form> -->
-      <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
-        <label for="fname">Name</label>
-        <input type="text" id="Name" name="Recipient_Name" placeholder="Your Name...">
-
-        <label for="email_id">Email ID</label>
-        <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Email ID">
-
-        <input type="submit" value="Submit">
-      </form>
-    </div>
-    <!--
-  2. Include a video element that will display the current video stream
-  and as well to show the recorded video at the end.
--->
     <p>
       <hr>
       {% with messages = get_flashed_messages(with_categories = true) %}
@@ -149,7 +139,6 @@
 
     </p>
 
-
 </body>
 
 <!-- 3. Include the RecordRTC library and the latest adapter -->
@@ -163,7 +152,7 @@
 
 <!-- <script src="{{ url_for('static', filename='scripts/upload.js') }}"></script> -->
 
-
+<!-- Live Recording -->
 <script>
   // Store a reference of the preview video element and a global reference to the recorder instance
   var video = document.getElementById('my-preview');
@@ -315,6 +304,9 @@
         formData.append('Model', Exercise_Model);
         formData.append('Webpage', Webpage);
         formData.append('Exercise_Name', Exercise_Name);
+        formData.append('Recipient_Name', Recipient_Name);
+        formData.append('Recipient_Email', Recipient_Email);
+
 
         console.log('Before POST Request')
         try {
@@ -357,4 +349,11 @@
 
 </script>
 
+<!-- Upload Recording -->
+<script>
+  function EmailDetails(){
+    var Recipient_Name = document.getElementById("Name");
+    var Recipient_Email = document.getElementById("Email_ID");
+  }
+</script>
 </html>

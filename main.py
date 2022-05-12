@@ -11,6 +11,7 @@ import moviepy.editor as mp
 import csv
 from flaskext.markdown import Markdown
 import yagmail
+from datetime import datetime
 
 def convert_to_dict(filename):
     """
@@ -171,6 +172,8 @@ def SendEmail(recipient_name, mailing_list, Exercise, prediction):
     body = f"""Hello There {recipient_name}!!!
     Your Assessment Result for the Exercise {Exercise} is: {prediction}
 
+    Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
+    
     Hope you have a Nice Day!!!
     """
     print(body)

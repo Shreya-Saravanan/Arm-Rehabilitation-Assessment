@@ -99,10 +99,3 @@ input[type=submit] {
 input[type=submit]:hover {
   background-color: rgb(69, 160, 73);
 }
-
-.container {
-  border-radius: 5px;
-  background-color: rgba(242, 242, 242, 0.606);
-  padding: 20px;
-}
-

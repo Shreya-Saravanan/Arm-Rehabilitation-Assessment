@@ -54,7 +54,10 @@
   <!-- End: Navbar Right Links (Dark) -->
 
   <!-- Instructions Section -->
-  <div>
+  <div style="text-align:justify; width:1200px; margin:0 auto;">
+    <h3 style="text-align:center;">
+      Please Read all the Instructions provided in the Exercise Instructions and Upload Instructions for a smooth and convenient experience 😀
+    </h3>
     <ul class="nav nav-tabs nav-fill" role="tablist">
       <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="tab"
           href="#tab-1">Exercise Instructions</a></li>
@@ -72,32 +75,29 @@
   </div>
 
   <!-- Sending a mail containing assessment results -->
-  <h3 style="text-align:center;">Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} </h3>
+  <hr>
+  <h3 style="text-align:center;">
+    Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} 
+  </h3>
+  
+  <hr>
 
   <!-- Upload Video Section -->
-
-  <div style="text-align:justify;">
+  <div style="text-align:justify; width:600px; margin:0 auto;">
     <form method="POST" action='/Exercise/{{ Exercise["Exercise_Webpage"] }}' enctype="multipart/form-data">
-      <dl>
-        <p>
-          <hr>
-  
           <input type="text" value="{{ Exercise.Exercise_Models }}" name="Model" autocomplete="off" required
             style="display:none;">
           <input type="text" style="display:none;" value="{{ Exercise.Exercise_Webpage }}" name="Webpage">
           <input type="text" style="display:none;" value="{{ Exercise.Exercise_Title }}" name="Exercise_Name">
+          
           <label for="Name">Name</label>
           <input type="text" id="Name" name="Recipient_Name" placeholder="Your Name...">
-  
           <label for="email_id">Email ID</label>
           <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Email ID">
           <hr>
           <input type="file" name="file" autocomplete="off" required>
-        </p>
-      </dl>
-      <p>
-        <input type="submit" value="Submit" style="text-align: center;">
-      </p>
+          <hr>
+          <input type="submit" value="Submit">
     </form>
   </div>
 
@@ -105,10 +105,8 @@
   <hr>
   <div>
     <dl>
-      <p>
-        <!-- <input type="file" name="file" autocomplete="off" required> -->
         <!-- 1. Include action buttons play/stop -->
-      <div class="live_recording" style="text-align: center;">
+      <div class="live_recording" style="text-align:justify; width:600px; margin:0 auto;">
         <button id="btn-start-recording" class="button-start" onclick="startTimer(event);">Start
           Recording</button>
         <button id="btn-stop-recording" class="button-stop" disabled="disabled">Stop Recording</button>
@@ -117,8 +115,7 @@
         <button id="btn-restart" class="button-restart" onclick="location.reload(true)">Restart</button>
       </div>
 
-
-      <h2 style="text-align:center;">
+      <h2 style="text-align:center; color:rgba(59, 174, 174, 0.966)">
         <div id="start-counter"></div>
       </h2>
       <!--
@@ -126,12 +123,12 @@
           -->
       <hr>
       <video style="display: block; margin-left: auto; margin-right: auto;" id="my-preview" controls autoplay></video>
-      </p>
+
     </dl>
   </div>
 
   <!-- Flash Messages -->
-  <p>
+  <p style="text-align:justify; width:600px; margin:0 auto;">
     <hr>
     {% with messages = get_flashed_messages(with_categories = true) %}
     {% if messages %}

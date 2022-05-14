@@ -8,6 +8,7 @@ keyring
 opencv-python
 numpy
 tensorflow
+ffmpeg-python
 moviepy
 imageio-ffmpeg
 Flask-Markdown

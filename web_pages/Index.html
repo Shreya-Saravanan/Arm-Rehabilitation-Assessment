@@ -2,13 +2,23 @@
 <html lang="en">
 
 <head>
+
   <meta charset="utf-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <title>Webpage</title>
+
+  <title>Home</title>
+
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Centered-Brand.css') }}">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.min.css') }}">
+
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-home-16.png') }}">
+
 </head>
 
 <body>
@@ -41,16 +51,146 @@
   </nav>
   <!-- End: Navbar Right Links (Dark) -->
 
-  <h1 class="display-2 text-center d-lg-flex justify-content-lg-center align-items-lg-center"><br>We aim to provide
-    feedback to stroke patients performing a specific set of arm rehabilitation exercises about the state of their
-    recovery using just a webcam.<br><br></h1>
-  <div
-    class="d-flex d-sm-flex d-md-flex d-lg-flex d-xxl-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center justify-content-md-center align-items-md-center justify-content-lg-center align-items-lg-center justify-content-xxl-center align-items-xxl-center">
-    
-    <a class="btn btn-primary btn-lg active fs-2 fw-lighter text-center bg-success d-inline-flex justify-content-center align-items-center align-content-center pulse animated"
-      role="button" href="/display/Exercises.html">Begin Assessment</a>
+  <h2 class="display-6 text-center d-lg-flex justify-content-lg-center align-items-lg-center">
+    <br>We aim to provide feedback to stroke patients performing a specific set of arm rehabilitation exercises about
+    the state of their
+    recovery using just a webcam.<br><br>
+    Click on the Exercise Image to begin Assessment
+  </h2>
 
-  </div>
+  <section class="d-xl-flex justify-content-xl-center align-items-xl-center">
+    <div id="carousel-1" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <!-- Arm Placed in the Front -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/1.png" width="512" height="512"
+              onclick='window.open("/Exercise/Arm_Placed_in_the_Front.html")' alt="Arm Placed in the Front" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Arm_Placed_in_the_Front.html">Arm Placed in the Front</a><br />
+
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Arm Placed on its Side -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/2.png" width="512" height="512"
+              onclick='window.open("/Exercise/Arm_Placed_on_its_Side.html")' alt="Arm Placed on its Side" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <br />
+              <a href="/Exercise/Arm_Placed_on_its_Side.html">Arm Placed on its Side</a><br /><br />
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Extending the Elbow - 1 -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/3.png" width="512" height="512"
+              onclick='window.open("/Exercise/Extending_the_Elbow_1.html")' alt="Extending the Elbow - 1" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Extending_the_Elbow_1.html">Extending the Elbow - 1</a><br />
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Extending the Elbow - 2 -->
+        <div
+          class="carousel-item active flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/4.png" width="512" height="512"
+              onclick='window.open("/Exercise/Extending_the_Elbow_1.html")' alt="Extending the Elbow - 2" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Extending_the_Elbow_2.html">Extending the Elbow - 2</a><br />
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Turning the Forearm -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/5.png" width="512" height="512"
+              onclick='window.open("/Exercise/Turning_the_Forearm.html")' alt="Turning the Forearm" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Turning_the_Forearm.html">Turning the Forearm</a><br />
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Extending the Wrist -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/6.png" width="512" height="512"
+              onclick='window.open("/Exercise/Extending_the_Wrist.html")' alt="Extending the Wrist" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Extending_the_Wrist.html">Extending the Wrist</a><br />
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Extending the Fingers -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img
+              class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/7.png" width="384" height="384"
+              onclick='window.open("/Exercise/Extending_the_Fingers.html")' alt="Extending the Fingers" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Extending_the_Fingers.html">Extending the Fingers</a><br />
+            </figcaption>
+          </figure>
+        </div>
+        <!-- Extending the Thumb -->
+        <div class="carousel-item flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+          <figure class="figure flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+            <img class="figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+              src="/static/images/8.png" width="384" height="384"
+              onclick='window.open("/Exercise/Extending_the_Thumb.html")' alt="Extending the Thumb" />
+            <figcaption style="text-align:center; padding-bottom: 30px;"
+              class="figure-caption flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap">
+              <a href="/Exercise/Extending_the_Thumb.html">Extending the Thumb</a><br />
+            </figcaption>
+          </figure>
+        </div>
+
+      </div>
+
+      <div>
+        <a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev"><span
+            class="carousel-control-prev-icon" aria-hidden="true"></span><span
+            class="visually-hidden">Previous</span></a>
+
+        <a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next"><span
+            class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span></a>
+      </div>
+
+      <ol class="carousel-indicators">
+        <li class="active" data-bs-target="#carousel-1" data-bs-slide-to="0"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="1"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="2"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="3"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="4"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="5"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="6"></li>
+        <li data-bs-target="#carousel-1" data-bs-slide-to="7"></li>
+      </ol>
+    </div>
+  </section>
 
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/bs-init.js') }}"></script>

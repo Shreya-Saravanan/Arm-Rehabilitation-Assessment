@@ -69,6 +69,12 @@ def display_result(result):
     if partialCondition_75:
         return assessmentResult[2]
 
+def convert_duration(seconds):
+    minutes = seconds // 60
+    seconds %= 60
+    
+    return minutes, seconds
+
 app = Flask(__name__,
             # static_folder='web_pages/',
             template_folder='web_pages/')
@@ -162,21 +168,37 @@ def Delete_File(upload_path, filename):
         print(f"Error: {error}")
         print('\nFile did not get deleted')
 
-def SendEmail(recipient_name, mailing_list, Exercise, prediction):
+def SendEmail(recipient_name, mailing_list, Exercise, duration, prediction):
     
     if recipient_name == '':
         recipient_name = 'User'
     
+    if duration != 0:
+        minutes, seconds = convert_duration(duration - 10)
+    
     subject = f"Your Assessment Results for the Exercise: {Exercise}"
 
-    body = f"""Hello There {recipient_name}!!!
-    Your Assessment Result for the Exercise {Exercise} is: {prediction}
-
-    Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
-    
-    Hope you have a Nice Day!!!
-    """
-    print(body)
+    if duration != 0:
+        body = f"""Hello There {recipient_name}!!!
+        Your Assessment Result for the Exercise {Exercise} is: {prediction}
+        
+        Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
+        
+        Duration of the Exercise performed: {minutes} min:{seconds} sec 
+        
+        Hope you have a Nice Day!!!
+        """
+        print(body)
+        
+    else:
+        body = f"""Hello There {recipient_name}!!!
+        Your Assessment Result for the Exercise {Exercise} is: {prediction}
+        
+        Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
+        
+        Hope you have a Nice Day!!!
+        """
+        print(body)
 
     yagmail.SMTP('fyp.send.email.web.app.flask@gmail.com').send(to = mailing_list, subject = subject, contents = body)
 
@@ -273,13 +295,13 @@ def Upload_Video(Exercise_Webpage):
 
                 flash(prediction[0],prediction[1])                
                 
-                print('Live Recording')
+                print('Upload Recording')
                 Delete_File(live_upload_path, filename)
                 Delete_File(upload_path, live_filename)
                 
-                print(f"Live Recording Details: {request.form['Webpage']}")
+                print(f"Upload Recording Details: {request.form['Webpage']}")
                 
-                SendEmail('', admin_email, request.form['Exercise_Name'], prediction[0])
+                SendEmail('', admin_email, request.form['Exercise_Name'], duration, prediction[0])
             
             else:    # Upload Recording 
                 if "_upload_recording" in file_recording: # Live Recording    
@@ -326,7 +348,7 @@ def Upload_Video(Exercise_Webpage):
                 
                 print(f"Upload Details: {request.form['Webpage']}")
 
-                SendEmail(recipient_name, mailing_list, request.form['Exercise_Name'], prediction[0])
+                SendEmail(recipient_name, mailing_list, request.form['Exercise_Name'], 0, prediction[0])
             
             return details(request.form['Webpage'])
 

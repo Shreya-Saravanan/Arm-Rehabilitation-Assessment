@@ -20,7 +20,7 @@
 
 - Please upload a Video File of the following specifications:
 
-  - Resolution : 480p $(640\times480)$
+  - Resolution : 480p (640×480)
 
   - Frame Rate : 30 FPS
 

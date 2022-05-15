@@ -1,26 +1,26 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   
   <title>{{webpage_title}}</title>
   
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
-
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-
+  <!-- CDN CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Exercises_Assessment.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Centered-Brand.css') }}">
-
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.min.css') }}">
-
+    <!-- Favicon -->
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
+
 </head>
 
 <body>
@@ -64,7 +64,7 @@
       <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-2">Upload
           Instructions</a></li>
     </ul>
-    <div class="tab-content">
+    <div style="text-align:justify; margin:0 auto;" class="tab-content">
       <div id="tab-1" class="tab-pane active" role="tabpanel" style="background-color:rgba(147, 186, 30, 0.757);">
         <p><br />{{ Instructions|markdown }}<br /></p>
       </div>
@@ -74,7 +74,7 @@
     </div>
   </div>
 
-  <!-- Sending a mail containing assessment results -->
+  <!-- Sending am Email containing Assessment Results -->
   <hr>
   <h3 style="text-align:center;">
     Enter Details to Receive a copy of your Assessment Results for the Exercise: {{webpage_title}} 
@@ -91,9 +91,9 @@
           <input type="text" style="display:none;" value="{{ Exercise.Exercise_Title }}" name="Exercise_Name">
           
           <label for="Name">Name</label>
-          <input type="text" id="Name" name="Recipient_Name" placeholder="Your Name...">
+          <input type="text" id="Name" name="Recipient_Name" placeholder="Enter your Name">
           <label for="email_id">Email ID</label>
-          <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Email ID">
+          <input type="text" id="Email_ID" name="Recipient_Email" placeholder="Enter your Email Address">
           <hr>
           <input type="file" name="file" autocomplete="off" required>
           <hr>
@@ -151,17 +151,15 @@
   <script src="/static/js/Live_Recorder.js"></script>
 
   <script src="/static/js/bootstrap.min.js"></script>
-
   <script src="/static/js/bs-init.js"></script>
 
   <!-- Include the RecordRTC library and the latest adapter -->
   <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
-
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
     integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </body>
 
 </html>

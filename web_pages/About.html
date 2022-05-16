@@ -12,6 +12,7 @@
 
   <!-- CDN CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Local CSS -->
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Centered-Brand.css') }}">
@@ -22,7 +23,7 @@
 </head>
 
 <body>
-  
+
   <!-- Start: Navbar Right Links (Dark) -->
   <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
     <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span
@@ -52,13 +53,42 @@
   </nav>
   <!-- End: Navbar Right Links (Dark) -->
 
+  <!-- Abstract -->
+  <section>
+    <h3 class="display-4 d-xl-flex justify-content-xl-center">Abstract</h3>
+    <ul>
+      <li>Stroke is becoming a major cause of early mortality and disability in low- and middle-income countries such as
+        India. Muscle atrophy occurs in hemiplegic individuals as a result of underused muscles, necessitating therapy
+        in order to fully recover.<br /></li>
+      <li>The arm rehabilitation is performed by continuous repeating workouts intended at treating hemiplegic patients
+        while providing feedback on their activities while executing the exercise set in terms of their recovery rate.
+        The degree of recovery of the hemiplegic patient is determined by the ease and speed with which an exercise is
+        done effectively.<br /></li>
+      <li>Our goal is to provide a low-cost solution to a severe problem affecting the country&#39;s low- and
+        middle-income groups.<br /></li>
+      <li>We were able to accomplish this using a webcam-based system that uses Deep Learning Models to provide
+        Rehabilitation Assessment to Eight Arm Rehabilitation Exercises that users can access via a Web
+        Application.<br /></li>
+    </ul>
+  </section>
 
-
+  <!-- About the Web Application -->
+  <section>
+    <h3 class="display-4 d-xl-flex justify-content-xl-center">About the Web Application</h3>
+    <ul>
+      <li>The Web Application was developed using Flask Framework coupled with basic HTML, CSS and JavaScript.<br />
+      </li>
+      <li>The Flask Application makes use of pre-trained Deep Learning Models for each Exercise.<br /></li>
+      <li>You can reach us through &quot;fyp.bbnb01@gmail.com&quot; for any suggestions or queries.</li>
+      <li>GitHub Repository: <a href="https://github.com/nobodyh/FYP-Web_Dev_ARA"> <i class="fa fa-github" style="font-size:24px"></i></a></li>
+    </ul>
+    
+  </section>
 
 
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/bs-init.js') }}"></script>
-  
+
 </body>
 
 </html>

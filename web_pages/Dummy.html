@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Upload.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Centered-Brand.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.min.css') }}">
-  <!-- Favicon -->
+    <!-- Favicon -->
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons8-doctors-bag-16.png') }}">
 
 </head>
@@ -56,7 +56,10 @@
   <!-- Instructions Section -->
   <div style="text-align:justify; width:1200px; margin:0 auto;">
     <h3 style="text-align:center;">
-      Please Read all the Instructions provided in the Exercise Instructions and Upload Instructions for a smooth and convenient experience 😀
+      Please Read all the Instructions provided in the Exercise Instructions and Upload Instructions for a smooth and convenient experience 😀    
+      <img style="text-align:justify; width:1200px; margin:0 auto;"
+      class="img-fluid figure-img flex-grow-0 justify-content-center align-items-center align-content-center flex-wrap"
+      src='/static/images/{{Exercise.Exercise_Image }}' width="384" height="384" />
     </h3>
     <ul class="nav nav-tabs nav-fill" role="tablist">
       <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="tab"

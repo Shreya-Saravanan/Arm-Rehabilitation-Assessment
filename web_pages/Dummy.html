@@ -151,7 +151,17 @@
   <!-- Upload Recording -->
   <script src="/static/js/Upload_Recorder.js"></script>
   <!-- Live Recording -->
-  <!-- <script src="/static/js/Live_Recorder.js"></script> -->
+  <script src="{{ url_for('static', filename='js/Live_Recorder.js') }}"></script>
+  <script>
+    var Webpage = "{{ Exercise.Exercise_Webpage }}";
+    console.log(Webpage);
+  
+    var Exercise_Name = "{{ Exercise.Exercise_Title }}";
+    console.log(Exercise_Name);
+  
+    var Exercise_Model = "{{ Exercise.Exercise_Models }}";
+    console.log(Exercise_Model);
+  </script>
 
   <script src="/static/js/bootstrap.min.js"></script>
   <script src="/static/js/bs-init.js"></script>
@@ -168,7 +178,7 @@
 </html>
 
 <!-- Live Recording Script -->
-<script>
+<!-- <script>
   // Live Recording
 
   // Store a reference of the preview video element and a global reference to the recorder instance
@@ -360,4 +370,4 @@
   function sendToServer(blob) {
   }
 
-</script>
+</script> -->

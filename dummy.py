@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import urllib.request
 from flask import Flask, flash, redirect, request, url_for, render_template
 from werkzeug.utils import secure_filename
@@ -12,6 +12,7 @@ import csv
 from flaskext.markdown import Markdown
 import yagmail
 from datetime import datetime
+from pymediainfo import MediaInfo
 
 def convert_to_dict(filename):
     """
@@ -69,11 +70,22 @@ def display_result(result):
     if partialCondition_75:
         return assessmentResult[2]
 
-def convert_duration(seconds):
-    minutes = seconds // 60
-    seconds %= 60
+def Video_Duration(filename):
+    metadata = MediaInfo.parse('static/uploads/' + filename)
     
-    return minutes, seconds
+    duration = ''
+
+    for track in metadata.tracks:
+        if track.track_type == "Video":
+            # print("Bit rate: {t.bit_rate}, Frame rate: {t.frame_rate}, "
+            #     "Format: {t.format}".format(t=track)
+            # )
+            # print("Duration (other values:")
+            # print(track.other_duration[4])
+            duration = track.other_duration[4]
+    # print(f'Duration of the Video: {duration}')
+    
+    return duration
 
 app = Flask(__name__,
             # static_folder='web_pages/',
@@ -84,7 +96,8 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the video file to be uploaded
 
 
-admin_email = 'fyp.send.email.web.app.flask@gmail.com'
+admin_email = ['fyp.send.email.web.app.flask@gmail.com'
+               ]
 recipient_name = ''
 recipient_email = ''
 
@@ -172,35 +185,36 @@ def SendEmail(recipient_name, mailing_list, Exercise, duration, prediction):
     
     if recipient_name == '':
         recipient_name = 'User'
-    
-    if duration != 0:
-        minutes, seconds = convert_duration(duration - 10)
-    
+
+    print('Mailing List: ', *mailing_list, sep = ',')
     subject = f"Your Assessment Results for the Exercise: {Exercise}"
 
-    if duration != 0:
-        body = f"""Hello There {recipient_name}!!!
-        Your Assessment Result for the Exercise {Exercise} is: {prediction}
-        
-        Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
-        
-        Duration of the Exercise performed: {minutes} min:{seconds} sec 
-        
-        Hope you have a Nice Day!!!
-        """
-        print(body)
-        
-    else:
-        body = f"""Hello There {recipient_name}!!!
-        Your Assessment Result for the Exercise {Exercise} is: {prediction}
-        
-        Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
-        
-        Hope you have a Nice Day!!!
-        """
-        print(body)
+    body = f"""Hello There {recipient_name}!!!
+    Your Assessment Result for the Exercise {Exercise} is: {prediction}
+    
+    Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
+    
+    Duration of the Exercise performed (hh:mm:ss:ms): {duration}
+    
+    Hope you have a Nice Day!!!
+    """
+    print(body)
 
     yagmail.SMTP('fyp.send.email.web.app.flask@gmail.com').send(to = mailing_list, subject = subject, contents = body)
+
+def Folder_Clear(Upload_Folder): # Delete all files, subdirectories, and symbolic links from a Directory
+    
+    print(f"Scheduler to clear folder contents at Path: '{Upload_Folder}'!")
+    
+    for files in os.listdir(Upload_Folder):
+        path = os.path.join(Upload_Folder, files)
+        
+        try:
+            print(f"File {files} Path: {path} Deleted Successfully!!!")
+            shutil.rmtree(path)
+        
+        except OSError:
+            os.remove(path)
 
 @app.route('/display/About.html', methods=['GET'])
 def About():
@@ -231,7 +245,7 @@ def details(Exercise_Webpage):
     with  open("static/instructions/Upload Section.md", "r", encoding = 'utf-8') as file:
         upload_instruction =  file.read()
         
-    return render_template("Exercises_Assessment.html", 
+    return render_template("Dummy.html", 
                         Exercise = exercise_dict, 
                         webpage_title = exercise_dict['Exercise_Title'],
                         Instructions = instruction, 
@@ -293,7 +307,9 @@ def Upload_Video(Exercise_Webpage):
                 
                 print(prediction)
 
-                flash(prediction[0],prediction[1])                
+                flash(prediction[0],prediction[1])       
+                
+                video_duration = Video_Duration(live_filename)         
                 
                 print('Upload Recording')
                 Delete_File(live_upload_path, filename)
@@ -301,7 +317,9 @@ def Upload_Video(Exercise_Webpage):
                 
                 print(f"Upload Recording Details: {request.form['Webpage']}")
                 
-                SendEmail('', admin_email, request.form['Exercise_Name'], duration, prediction[0])
+                
+                
+                SendEmail('', *admin_email, request.form['Exercise_Name'], video_duration, prediction[0])
             
             else:    # Upload Recording 
                 if "_upload_recording" in file_recording: # Live Recording    
@@ -329,9 +347,11 @@ def Upload_Video(Exercise_Webpage):
                     
                     print(prediction)
 
-                    flash(prediction[0],prediction[1])                
+                    flash(prediction[0],prediction[1])     
                     
-                    print('Live Recording')
+                    video_duration = Video_Duration(live_filename)           
+                    
+                    print('Upload Recording')
                     Delete_File(live_upload_path, filename)
                     Delete_File(upload_path, live_filename)
                 
@@ -342,13 +362,19 @@ def Upload_Video(Exercise_Webpage):
 
                     flash(prediction[0],prediction[1])
                     
+                    video_duration = Video_Duration(filename)
+                    
                     Delete_File(upload_path, filename)
+                    
+                    duration = 0
                 
                 recipient_name, mailing_list = Email()
                 
                 print(f"Upload Details: {request.form['Webpage']}")
+                
+                print(f'Duration: {duration}')
 
-                SendEmail(recipient_name, mailing_list, request.form['Exercise_Name'], 0, prediction[0])
+                SendEmail(recipient_name, mailing_list, request.form['Exercise_Name'], video_duration, prediction[0])
             
             return details(request.form['Webpage'])
 
@@ -360,10 +386,10 @@ def Upload_Video(Exercise_Webpage):
 def Email():
     if request.form['Recipient_Name'] == '':            
         recipient_name = ''
-        mailing_list = [admin_email]
+        mailing_list = [*admin_email]
     else:
         recipient_name = request.form['Recipient_Name']   
-        mailing_list = [request.form['Recipient_Email'], admin_email]
+        mailing_list = [request.form['Recipient_Email'], *admin_email]
         
     return recipient_name, mailing_list
         
@@ -386,6 +412,9 @@ def Server_Timeout(e):
 
 @app.errorhandler(500)
 def Internal_Server_Error(e):
+    # Function to clear folder contents when Error 500 occurs
+    Folder_Clear('static/uploads/')
+    
     return render_template('Error_500.html'),500
 
 if __name__ == "__main__":

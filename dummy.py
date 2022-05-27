@@ -71,7 +71,7 @@ def display_result(result):
         return assessmentResult[2]
 
 def Video_Duration(filename):
-    metadata = MediaInfo.parse('static/uploads/' + filename)
+    metadata = MediaInfo.parse('./static/uploads/' + filename)
     
     duration = ''
 
@@ -92,7 +92,7 @@ app = Flask(__name__,
             template_folder='web_pages/')
 
 app.secret_key = os.urandom(24).hex()
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
+app.config['UPLOAD_FOLDER'] = './static/uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the Video File to be Uploaded
 
 # Mail Settings
@@ -328,7 +328,7 @@ def Upload_Video(Exercise_Webpage):
                 except:
                     # Function to clear folder contents when Error 500 occurs
                     print('Error 500')
-                    Folder_Clear('static/uploads/')
+                    Folder_Clear('./static/uploads/')
     
             
             else:    # Upload Recording 
@@ -389,7 +389,7 @@ def Upload_Video(Exercise_Webpage):
                 except:
                     # Function to clear folder contents when Error 500 occurs
                     print('Error 500')
-                    Folder_Clear('static/uploads/')
+                    Folder_Clear('./static/uploads/')
                     
             return details(request.form['Webpage'])
 

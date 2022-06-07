@@ -13,8 +13,11 @@ from flaskext.markdown import Markdown
 from datetime import datetime
 from pymediainfo import MediaInfo
 import MailingService
+from prometheus_flask_exporter import PrometheusMetrics
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from prometheus_client import make_wsgi_app
 
-def convert_to_dict(filename):
+def convert_to_dict(filename:str):
     """
     Convert a CSV file to a list of Python dictionaries
     """
@@ -38,7 +41,7 @@ def convert_to_dict(filename):
     # Return the list
     return webpage_dict
 
-def display_result(result):
+def display_result(result:str):
     
     completeCondition = ("100" in result)
     partialCondition_25 = ("25" in result)
@@ -70,7 +73,7 @@ def display_result(result):
     if partialCondition_75:
         return assessmentResult[2]
 
-def Video_Duration(filename):
+def Video_Duration(filename:str):
     metadata = MediaInfo.parse('./static/uploads/' + filename)
     
     duration = ''
@@ -91,6 +94,11 @@ app = Flask(__name__,
             # static_folder='web_pages/',
             template_folder='web_pages/')
 
+# Prometheus Metrics
+app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+    '/metrics': make_wsgi_app()
+})
+
 app.secret_key = os.urandom(24).hex()
 app.config['UPLOAD_FOLDER'] = './static/uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the Video File to be Uploaded
@@ -104,8 +112,9 @@ recipient_name = ''
 recipient_email = ''
 
 Markdown(app)
+metrics = PrometheusMetrics(app)
 
-def Load_Model(Exercise_Models):
+def Load_Model(Exercise_Models:str):
     Model_Path = os.path.abspath(os.path.expanduser(
     os.path.expandvars('models/' + Exercise_Models)))
 
@@ -115,7 +124,7 @@ def Load_Model(Exercise_Models):
     
     return Model
 
-def frames_extraction(video_path):
+def frames_extraction(video_path:str):
     SEQUENCE_LENGTH = 40
     IMAGE_HEIGHT, IMAGE_WIDTH = 70, 70
 
@@ -139,7 +148,7 @@ def frames_extraction(video_path):
     video_reader.release()
     return frames_list
 
-def pred_video(Exercise_Models, video_file):
+def pred_video(Exercise_Models:str, video_file:str):
     
     Model = Load_Model(Exercise_Models)
     
@@ -163,14 +172,14 @@ def pred_video(Exercise_Models, video_file):
     print(CLASSES_LIST[pred_class]) 
     return display_result(CLASSES_LIST[pred_class])
 
-def flash_prediction(Exercise_Model, filename):
+def flash_prediction(Exercise_Model:str, filename:str):
     upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     print(f'\nUpload Path: {upload_path}\n')
     prediction = pred_video(Exercise_Model, upload_path)
     
     return upload_path, prediction
     
-def Delete_File(upload_path, filename):
+def Delete_File(upload_path:str, filename:str):
     try:
         if os.path.exists(upload_path):
             os.remove(upload_path)
@@ -183,7 +192,7 @@ def Delete_File(upload_path, filename):
         print(f"Error: {error}")
         print('\nFile did not get deleted')
 
-def Folder_Clear(Upload_Folder): # Delete all files, subdirectories, and symbolic links from a Directory
+def Folder_Clear(Upload_Folder:str): # Delete all files, subdirectories, and symbolic links from a Directory
     
     print(f"Scheduler to Clear Folder contents at Path: '{Upload_Folder}'!")
     
@@ -198,7 +207,7 @@ def Folder_Clear(Upload_Folder): # Delete all files, subdirectories, and symboli
             os.remove(path)
     print()
 
-def SendEmail(recipient_name, mailing_list, Exercise, duration, prediction):
+def SendEmail(recipient_name:str, mailing_list:list, Exercise:str, duration:str, prediction:str):
     
     if recipient_name == '':
         recipient_name = 'User'
@@ -223,11 +232,11 @@ def SendEmail(recipient_name, mailing_list, Exercise, duration, prediction):
                                 body = message)
     
 
+exercise_list = convert_to_dict("Exercises.csv")
+
 @app.route('/display/About.html', methods=['GET'])
 def About():
     return render_template('About.html')
-
-exercise_list = convert_to_dict("Exercises.csv")
 
 @app.route('/Exercise/<Exercise_Webpage>', methods=['GET'])
 def details(Exercise_Webpage):
@@ -235,12 +244,12 @@ def details(Exercise_Webpage):
     print(f'Webpage GET: {Exercise_Webpage}')
     
     try:
-        exercise_dict = exercise_list[Exercise_Webpage]
+        exercise_dict:dict = exercise_list[Exercise_Webpage]
 
     except:
         return render_template('Error_404.html')
 
-    img_link = "images/" + exercise_dict['Image']
+    img_link:str = "images/" + exercise_dict['Image']
     
     with  open("static/instructions/" + exercise_dict['Instructions'], "r", encoding = 'utf-8') as file:
         instruction =  file.read()
@@ -410,6 +419,17 @@ def Email():
     return recipient_name, mailing_list
         
 
+@app.route('/simple')
+def simple_get():
+    pass
+    
+metrics.register_default(
+    metrics.counter(
+        'by_path_counter', 'Request count by request paths',
+        labels={'path': lambda: request.path}
+    )
+)
+
 @app.route('/', methods=['GET'])
 def Index():
     return render_template('Index.html')
@@ -432,4 +452,4 @@ def Internal_Server_Error(e):
 
 if __name__ == "__main__":
     
-    app.run(debug = True)
+    app.run(debug = False)

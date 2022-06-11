@@ -1,6 +1,7 @@
 **Email Updates**
 
 - To receive Email Update about your Live Recording Assessment Result, Click the Download Button to download your assessment video and then fill in the necessary details (Name, Email ID) and follow the procedure mentioned in File Upload.
+- In case you do not see any emails regarding your assessment results, kindly check your Spam Folder from the possible Email IDs: 'flask_web_app_fyp@outlook.com' or 'fyp.send.email.web.app.flask@gmail.com'
 
 **Live-Recording**
 

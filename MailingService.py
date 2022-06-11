@@ -1,8 +1,15 @@
 import EnvVar
 import yagmail
 
-def MailSettings(email_option, mailing_list, subject, body):
-    
+def MailSettings(email_option:int, mailing_list:list, subject:str, body:str):
+    """SMTP Setup and Sending Email
+
+    Args:
+        - email_option (int): Select the Email ID used to setup the SMTP server
+        - mailing_list (list[str]): List of mail recipients to send the email
+        - subject (str): Subject of the Email
+        - body (str): Message to be sent in the Email
+    """
     user, app_password = EnvVar.SetEnvVariables(email_option)
 
     if email_option == 1:
@@ -28,10 +35,10 @@ def MailSettings(email_option, mailing_list, subject, body):
         try:
             yagmail.SMTP(user = user, password = app_password).send(to = mailing_list, subject = subject, contents = body)
             
-            print('Email Sent Successfully using GMail')
+            print('Email Sent Successfully using Gmail')
         
         except:
-            print('Email not sent Successfully using GMail')
+            print('Email not sent Successfully using Gmail')
             
     else:
         print('Invalid Mail Settings!!!')

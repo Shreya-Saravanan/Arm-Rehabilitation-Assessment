@@ -7,19 +7,21 @@ import numpy as np
 from tensorflow import keras
 from keras.models import load_model
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
-import moviepy.editor as mp
 import csv
 from flaskext.markdown import Markdown
 from datetime import datetime
 from pymediainfo import MediaInfo
 import MailingService
-from prometheus_flask_exporter import PrometheusMetrics
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from prometheus_client import make_wsgi_app
+
 
 def convert_to_dict(filename:str):
-    """
-    Convert a CSV file to a list of Python dictionaries
+    """Convert a CSV file to a list of Python Dictionaries.
+
+    Args:
+        - filename (str): CSV Filename to be read.
+
+    Returns:
+        - Exercise (dict): Returns Key-Value Pair of the Exercise details to be loaded by the Web Server.
     """
     # Open a CSV file - note - must have column headings in top row
     datafile = open(filename, newline='')
@@ -41,8 +43,166 @@ def convert_to_dict(filename:str):
     # Return the list
     return webpage_dict
 
-def display_result(result:str):
+
+def Delete_File(upload_path:str, filename:str):
+    """To Delete the Recording uploaded by User after they receive their assessment result.
+
+    Args:
+        - upload_path (str): Folder Path of the Recording.
+        - filename (str): File Name of the uploaded Recording.
+    """
+    try:
+        if os.path.exists(upload_path):
+            os.remove(upload_path)
+            print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
+        
+        else:
+            print(f"The File {filename} does not exist\n")
+
+    except OSError as error:
+        print(f"Error: {error}")
+        print('\nFile did not get deleted')
+
+
+def Folder_Clear(Upload_Folder:str): # Delete all files, subdirectories, and symbolic links from a Directory
+    """To clear the Web Server 'static/uploads/' Folder in case of any Error 500 instances.
+
+    Args:
+     -   Upload_Folder (str): Folder Path to clear the Folder Contents.
+    """
+    print(f"Scheduler to Clear Folder contents at Path: '{Upload_Folder}'!")
     
+    for files in os.listdir(Upload_Folder):
+        path = os.path.join(Upload_Folder, files)
+        
+        try:
+            print(f"File {files} Path: {path} Deleted Successfully!!!")
+            shutil.rmtree(path)
+        
+        except OSError:
+            os.remove(path)
+    print()
+
+
+def Video_Duration(filename:str):
+    """To obtain the duration of the Recording in string format.
+
+    Args:
+        - filename (str): File Name of the uploaded Recording.
+
+    Returns:
+        - duration (str): Returns Duration of the Video Recording in (hh:mm:ss:ms) Format.
+    """
+    metadata = MediaInfo.parse('./static/uploads/' + filename)
+    
+    duration = ''
+
+    for track in metadata.tracks:
+        if track.track_type == "Video":
+            # print("Bit rate: {t.bit_rate}, Frame rate: {t.frame_rate}, "
+            #     "Format: {t.format}".format(t=track)
+            # )
+            # print("Duration (other values:")
+            # print(track.other_duration[4])
+            duration = track.other_duration[4]
+    # print(f'Duration of the Video: {duration}')
+    
+    return duration
+
+
+def SendEmail(recipient_name:str, mailing_list:list, Exercise:str, duration:str, prediction:str):
+    """To send Email to User their assessment results.
+    Args:
+        - recipient_name (str): User Name
+        - mailing_list (list): List containing Email IDs to send the Email to.
+        - Exercise (str): Name of the Exercise the User undertook the assessment.
+        - duration (str): Duration for which the User had undertaken the assessment.
+        - prediction (str): Assessment Result 
+    """
+    if recipient_name == '':
+        recipient_name = 'User'
+
+    print('Mailing List: ', *mailing_list, sep = ',')
+    subject = f"Your Assessment Results for the Exercise: {Exercise}"
+
+    message = f"""Hello There {recipient_name}!!!
+    Your Assessment Result for the Exercise {Exercise} is: {prediction}
+    
+    Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
+    
+    Duration of the Exercise performed (hh:mm:ss:ms): {duration}
+    
+    Hope you have a Nice Day!!!
+    """
+    print(message)
+
+    MailingService.MailSettings(email_option = email_option, 
+                                mailing_list = mailing_list, 
+                                subject = subject, 
+                                body = message)
+    
+
+def Load_Model(Exercise_Models:str):
+    """Loads Keras Model for the specified Exercise.
+
+    Args:
+        - Exercise_Models (str): File Path of the Exercise Model.
+
+    Returns:
+        - Model (Keras Model): Returns a Keras Model used to predict the uploaded Recording.
+    """
+    Model_Path = os.path.abspath(os.path.expanduser(
+    os.path.expandvars('models/' + Exercise_Models)))
+
+    print(f'\nModel Path: {Model_Path}\n')
+    Model = load_model(Model_Path)
+    print(f"Model for Exercise {int(Exercise_Models[9:10])} Loaded Successfully!!!\n")
+    
+    return Model
+
+
+def Frames_Extraction(video_path:str):
+    """To extract the frames from Recording to pass into the Keras Model.
+
+    Args:
+        - video_path (str): Video Recording File Path.
+
+    Returns:
+        - frames (list): Returns a list of all the frames in the Recording.
+    """
+    SEQUENCE_LENGTH = 40
+    IMAGE_HEIGHT, IMAGE_WIDTH = 70, 70
+
+    frames_list = []
+    video_reader = cv2.VideoCapture(video_path)
+    video_frames_count = int(video_reader.get(cv2.CAP_PROP_FRAME_COUNT))
+    skip_frames_window = max(int(video_frames_count/SEQUENCE_LENGTH), 1)
+
+    for frame_counter in range(SEQUENCE_LENGTH):
+        video_reader.set(cv2.CAP_PROP_POS_FRAMES,
+                         frame_counter * skip_frames_window)
+        success, frame = video_reader.read()
+
+        if not success:
+            break
+
+        resized_frame = cv2.resize(frame, (IMAGE_HEIGHT, IMAGE_WIDTH))
+        normalized_frame = resized_frame / 255
+        frames_list.append(normalized_frame)
+
+    video_reader.release()
+    return frames_list
+
+
+def Display_Result(result:str):
+    """Message to be displayed to the Web Application.
+
+    Args:
+        - result (str): Result from the predicted recording.
+
+    Returns:
+        - (Result, Category) (list[str, str]) : Returns the prediction result and category for flashing the message in Web Application.
+    """
     completeCondition = ("100" in result)
     partialCondition_25 = ("25" in result)
     partialCondition_50 = ("50" in result)
@@ -73,83 +233,17 @@ def display_result(result:str):
     if partialCondition_75:
         return assessmentResult[2]
 
-def Video_Duration(filename:str):
-    metadata = MediaInfo.parse('./static/uploads/' + filename)
-    
-    duration = ''
 
-    for track in metadata.tracks:
-        if track.track_type == "Video":
-            # print("Bit rate: {t.bit_rate}, Frame rate: {t.frame_rate}, "
-            #     "Format: {t.format}".format(t=track)
-            # )
-            # print("Duration (other values:")
-            # print(track.other_duration[4])
-            duration = track.other_duration[4]
-    # print(f'Duration of the Video: {duration}')
-    
-    return duration
+def Predict_Video(Exercise_Models:str, video_file:str):
+    """Predict the extent of User recovery using the Recording passed to Keras Model.
 
-app = Flask(__name__,
-            # static_folder='web_pages/',
-            template_folder='web_pages/')
+    Args:
+        - Exercise_Models (str): Exercise Model Used.
+        - video_file (str): Video Recording File Path.
 
-# Prometheus Metrics
-app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
-    '/metrics': make_wsgi_app()
-})
-
-app.secret_key = os.urandom(24).hex()
-app.config['UPLOAD_FOLDER'] = './static/uploads/'
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the Video File to be Uploaded
-
-# Mail Settings
-email_option = 1
-admin_email = ['flask_web_app_fyp@outlook.com',
-               'fyp.send.email.web.app.flask@gmail.com'
-               ]
-recipient_name = ''
-recipient_email = ''
-
-Markdown(app)
-metrics = PrometheusMetrics(app)
-
-def Load_Model(Exercise_Models:str):
-    Model_Path = os.path.abspath(os.path.expanduser(
-    os.path.expandvars('models/' + Exercise_Models)))
-
-    print(f'\nModel Path: {Model_Path}\n')
-    Model = load_model(Model_Path)
-    print(f"Model for Exercise {int(Exercise_Models[9:10])} Loaded Successfully!!!\n")
-    
-    return Model
-
-def frames_extraction(video_path:str):
-    SEQUENCE_LENGTH = 40
-    IMAGE_HEIGHT, IMAGE_WIDTH = 70, 70
-
-    frames_list = []
-    video_reader = cv2.VideoCapture(video_path)
-    video_frames_count = int(video_reader.get(cv2.CAP_PROP_FRAME_COUNT))
-    skip_frames_window = max(int(video_frames_count/SEQUENCE_LENGTH), 1)
-
-    for frame_counter in range(SEQUENCE_LENGTH):
-        video_reader.set(cv2.CAP_PROP_POS_FRAMES,
-                         frame_counter * skip_frames_window)
-        success, frame = video_reader.read()
-
-        if not success:
-            break
-
-        resized_frame = cv2.resize(frame, (IMAGE_HEIGHT, IMAGE_WIDTH))
-        normalized_frame = resized_frame / 255
-        frames_list.append(normalized_frame)
-
-    video_reader.release()
-    return frames_list
-
-def pred_video(Exercise_Models:str, video_file:str):
-    
+    Returns:
+        - _type_: Assessment Results.
+    """
     Model = Load_Model(Exercise_Models)
     
     SEQUENCE_LENGTH = 40
@@ -158,7 +252,7 @@ def pred_video(Exercise_Models:str, video_file:str):
 
     features = []
 
-    frames = frames_extraction(video_file)
+    frames = Frames_Extraction(video_file)
 
     if len(frames) == SEQUENCE_LENGTH:
         features.append(frames)
@@ -170,67 +264,45 @@ def pred_video(Exercise_Models:str, video_file:str):
     pred_class = pred_vec.index(max(pred_vec))
 
     print(CLASSES_LIST[pred_class]) 
-    return display_result(CLASSES_LIST[pred_class])
+    return Display_Result(CLASSES_LIST[pred_class])
 
-def flash_prediction(Exercise_Model:str, filename:str):
+
+def Flash_Prediction(Exercise_Model:str, filename:str):
+    """Flash User Assessment Results in Flask Web Application.
+
+    Args:
+        - Exercise_Model (str): Exercise Model used.
+        - filename (str): Video Recording File Path
+
+    Returns:
+        - upload_path (str): Video Recording File Path to be deleted after flashing the message in Web Application.
+        - prediction (list[str, str]): Returns the prediction result and category for flashing the message in Web Application.
+    """
     upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     print(f'\nUpload Path: {upload_path}\n')
-    prediction = pred_video(Exercise_Model, upload_path)
+    prediction = Predict_Video(Exercise_Model, upload_path)
     
     return upload_path, prediction
     
-def Delete_File(upload_path:str, filename:str):
-    try:
-        if os.path.exists(upload_path):
-            os.remove(upload_path)
-            print(f'\nFile {filename} at location {upload_path} deleted successfully\n')
-        
-        else:
-            print(f"The File {filename} does not exist\n")
 
-    except OSError as error:
-        print(f"Error: {error}")
-        print('\nFile did not get deleted')
+app = Flask(__name__,
+            # static_folder='web_pages/',
+            template_folder='web_pages/')
 
-def Folder_Clear(Upload_Folder:str): # Delete all files, subdirectories, and symbolic links from a Directory
-    
-    print(f"Scheduler to Clear Folder contents at Path: '{Upload_Folder}'!")
-    
-    for files in os.listdir(Upload_Folder):
-        path = os.path.join(Upload_Folder, files)
-        
-        try:
-            print(f"File {files} Path: {path} Deleted Successfully!!!")
-            shutil.rmtree(path)
-        
-        except OSError:
-            os.remove(path)
-    print()
+app.secret_key = os.urandom(24).hex()
+app.config['UPLOAD_FOLDER'] = './static/uploads/'
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 # 100 MB Size Limit for the Video File to be Uploaded
 
-def SendEmail(recipient_name:str, mailing_list:list, Exercise:str, duration:str, prediction:str):
-    
-    if recipient_name == '':
-        recipient_name = 'User'
+# Mail Settings
+email_option:int = 1
+admin_email = ['flask_web_app_fyp@outlook.com',
+               'fyp.send.email.web.app.flask@gmail.com'
+               ]
+recipient_name = ''
+recipient_email = ''
 
-    print('Mailing List: ', *mailing_list, sep = ',')
-    subject = f"Your Assessment Results for the Exercise: {Exercise}"
+Markdown(app)
 
-    message = f"""Hello There {recipient_name}!!!
-    Your Assessment Result for the Exercise {Exercise} is: {prediction}
-    
-    Date and Time of the Exercise performed: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
-    
-    Duration of the Exercise performed (hh:mm:ss:ms): {duration}
-    
-    Hope you have a Nice Day!!!
-    """
-    print(message)
-
-    MailingService.MailSettings(email_option = email_option, 
-                                mailing_list = mailing_list, 
-                                subject = subject, 
-                                body = message)
-    
 
 exercise_list = convert_to_dict("Exercises.csv")
 
@@ -239,8 +311,15 @@ def About():
     return render_template('About.html')
 
 @app.route('/Exercise/<Exercise_Webpage>', methods=['GET'])
-def details(Exercise_Webpage):
+def Exercise(Exercise_Webpage):
+    """Render the Exercise Webpage dynamically.
 
+    Args:
+        - Exercise_Webpage (_type_): Used to load the corresponding key-value pair details associated with the Exercise.
+
+    Returns:
+        _type_: Returns a template to display the Exercise Webpage.
+    """
     print(f'Webpage GET: {Exercise_Webpage}')
     
     try:
@@ -265,8 +344,12 @@ def details(Exercise_Webpage):
                         Image = img_link)
 
 @app.route('/Exercise/<Exercise_Webpage>',methods=['POST'])
-def Upload_Video(Exercise_Webpage):
-    
+def Exercise_Assessment(Exercise_Webpage):
+    """Obtain User assessment recording to provide feedback.
+
+    Returns:
+        _type_: Renders a template to display the Webpage with the assessment result flashed as a message.
+    """
     print(f"Webpage POST: {request.form['Webpage']}")
 
     if 'file' not in request.files:
@@ -316,7 +399,7 @@ def Upload_Video(Exercise_Webpage):
                 print(f'Target Name: {targetName}')
                 print(f'\nLive Video File Path: {live_upload_path}')
                 
-                upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = live_filename)
+                upload_path, prediction = Flash_Prediction(Exercise_Model = Model, filename = live_filename)
                 
                 print(prediction)
 
@@ -362,7 +445,7 @@ def Upload_Video(Exercise_Webpage):
                     print(f'Target Name: {targetName}')
                     print(f'\nLive Video File Path: {live_upload_path}')
                     
-                    upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = live_filename)
+                    upload_path, prediction = Flash_Prediction(Exercise_Model = Model, filename = live_filename)
                     
                     print(prediction)
 
@@ -375,7 +458,7 @@ def Upload_Video(Exercise_Webpage):
                     Delete_File(upload_path, live_filename)
                 
                 else:
-                    upload_path, prediction = flash_prediction(Exercise_Model = Model, filename = filename)
+                    upload_path, prediction = Flash_Prediction(Exercise_Model = Model, filename = filename)
                                     
                     print(prediction)
 
@@ -400,14 +483,19 @@ def Upload_Video(Exercise_Webpage):
                     print('Error 500')
                     Folder_Clear('./static/uploads/')
                     
-            return details(request.form['Webpage'])
+            return Exercise(request.form['Webpage'])
 
         except:
             prediction = ["Uh-oh, there seems to be a problem", 'result_0']
             return render_template('Error_500.html')
 
 def Email():
-    
+    """To Create a Mailing List to send Emails.
+
+    Returns:
+        - recipient_name (str): Returns the Name of the Recipient if specified by the User.
+        - mailing_list (list[str]): Returns the list of Email IDs to send the Email regarding the Exercises Assessment.
+    """
     if request.form['Recipient_Name'] == '':            
         recipient_name = ''
         mailing_list = [*admin_email]
@@ -418,17 +506,6 @@ def Email():
         
     return recipient_name, mailing_list
         
-
-@app.route('/simple')
-def simple_get():
-    pass
-    
-metrics.register_default(
-    metrics.counter(
-        'by_path_counter', 'Request count by request paths',
-        labels={'path': lambda: request.path}
-    )
-)
 
 @app.route('/', methods=['GET'])
 def Index():

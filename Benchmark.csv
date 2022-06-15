@@ -1,0 +1,9 @@
+Exercise Number,Exercise Title,LSTM Models,BiLSTM Models,ConvLSTM Models,LRCN Models
+1,Arm Placed in the Front,LSTM_Exercise 1 - Arm Placed in the Front.h5,BiLSTM_Exercise 1 - Arm Placed in the Front.h5,ConvLSTM_Exercise 1 - Arm Placed in the Front.h5,LRCN_Exercise 1 - Arm Placed in the Front.h5
+2,Arm Placed on its Side,LSTM_Exercise 2 - Arm Placed on its Side.h5,BiLSTM_Exercise 2 - Arm Placed on its Side.h5,ConvLSTM_Exercise 2 - Arm Placed on its Side.h5,LRCN_Exercise 2 - Arm Placed on its Side.h5
+3,Extending the Elbow - 1,LSTM_Exercise 3 - Extending the Elbow_1.h5,BiLSTM_Exercise 3 - Extending the Elbow_1.h5,ConvLSTM_Exercise 3 - Extending the Elbow_1.h5,LRCN_Exercise 3 - Extending the Elbow_1.h5
+4,Extending the Elbow - 2,LSTM_Exercise 4 - Extending the Elbow_2.h5,BiLSTM_Exercise 4 - Extending the Elbow_2.h5,ConvLSTM_Exercise 4 - Extending the Elbow_2.h5,LRCN_Exercise 4 - Extending the Elbow_2.h5
+5,Turning the Forearm,LSTM_Exercise 5 - Turning the Forearm.h5,BiLSTM_Exercise 5 - Turning the Forearm.h5,ConvLSTM_Exercise 5 - Turning the Forearm.h5,LRCN_Exercise 5 - Turning the Forearm.h5
+6,Extending the Wrist,LSTM_Exercise 6 - Extending the Wrist.h5,BiLSTM_Exercise 6 - Extending the Wrist.h5,ConvLSTM_Exercise 6 - Extending the Wrist.h5,LRCN_Exercise 6 - Extending the Wrist.h5
+7,Extending the Fingers,LSTM_Exercise 7 - Extending the Fingers.h5,BiLSTM_Exercise 7 - Extending the Fingers.h5,ConvLSTM_Exercise 7 - Extending the Fingers.h5,LRCN_Exercise 7 - Extending the Fingers.h5
+8,Extending the Thumb,LSTM_Exercise 8 - Extending the Thumb.h5,BiLSTM_Exercise 8 - Extending the Thumb.h5,ConvLSTM_Exercise 8 - Extending the Thumb.h5,LRCN_Exercise 8 - Extending the Thumb.h5

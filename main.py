@@ -473,7 +473,7 @@ def Exercise_Assessment(Exercise_Webpage):
                 
                 print(f"Upload Details: {request.form['Webpage']}")
                 
-                print(f'Duration: {duration}')
+                print(f'Duration: {video_duration}')
 
                 try:
                     SendEmail(recipient_name, mailing_list, request.form['Exercise_Name'], video_duration, prediction[0])

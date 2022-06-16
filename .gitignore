@@ -1,6 +1,6 @@
 env/
 __pycache__/
 .vscode
-# Exclude contents within 'static/uploads/'
+# Exclude contents within 'static/uploads/' but not the folder
 static/uploads/*
 !static/uploads/.gitkeep 

@@ -78,7 +78,7 @@ def Frames_Extraction(video_path: str):
 def Load_Model(Model_Name: str, Exercise_Title: str, Exercise_Model: str):
     try:
         Model_Path = os.path.abspath(os.path.expanduser(
-            os.path.expandvars(f'./models/benchmark/{Exercise_Title}/{Model_Name}/{Exercise_Model}')))
+            os.path.expandvars(f'./static/uploads/benchmark/{Exercise_Title}/{Model_Name}/{Exercise_Model}')))
         print(f'\nModel Path: {Model_Path}\n')
 
         Model = load_model(Model_Path)
@@ -133,7 +133,7 @@ def Accuracy(Model_Name: str, Exercise_Title: str, Model: str):
 
     for filename in filenames:
         prediction = Predict_Video(
-            Model_Name, Exercise_Title, Exercise_Model=Model, filename=filename)
+            Model_Name, Exercise_Title, Exercise_Model=Model, video_file=filename)
 
         if prediction in filename:
             count += 1
@@ -163,7 +163,7 @@ def Plot_Metrics(exercise_title: str, model_name: str, cpu: list, memory: list):
     cpu_ax.grid(True)
 
     cpu_figure.savefig(
-        f"./models/benchmark/{exercise_title}/{model_name}/{cpu_name}", bbox_inches='tight')
+        f"./static/uploads/benchmark/{exercise_title}/{model_name}/{cpu_name}", bbox_inches='tight')
 
 
     memory_figure, memory_ax = plt.subplots()
@@ -176,7 +176,7 @@ def Plot_Metrics(exercise_title: str, model_name: str, cpu: list, memory: list):
     memory_ax.grid(True)
 
     memory_figure.savefig(
-        f"./models/benchmark/{exercise_title}/{model_name}/{memory_name}", bbox_inches='tight')
+        f"./static/uploads/benchmark/{exercise_title}/{model_name}/{memory_name}", bbox_inches='tight')
     plt.close('all')
 
 
@@ -197,7 +197,7 @@ def Resource_Monitor(Exercise: dict, model: str):
     print(f"Process ID(PPID): {resource_monitor_process.ppid()}")
 
     while target_process.is_alive():
-        print(target_process.is_alive())    
+        # print(target_process.is_alive())    
         try:
 
             cpu.append((resource_monitor_process.cpu_percent()/ psutil.cpu_count())), memory.append(
@@ -238,8 +238,8 @@ if __name__ == '__main__':
 
         for model in MODELS:
             
-            # if Exercise_dict['Exercise Number'] in [1,4,7]:      # Change the List Value to run the Benchmark for the desired Exercise  
-            #     Resource_Monitor(Exercise_dict, model)
+            if Exercise_dict['Exercise Number'] in ['1','4','8']:      # Change the List Value to run the Benchmark for the desired Exercise  
+                Resource_Monitor(Exercise_dict, model)
                   
-            Resource_Monitor(Exercise_dict, model)
+            # Resource_Monitor(Exercise_dict, model)
 

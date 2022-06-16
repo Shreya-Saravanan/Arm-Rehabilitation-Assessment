@@ -15,4 +15,4 @@ def delete_files_with_extension(directory:str, extension:str):
         except OSError:
             os.remove(file)
             
-delete_files_with_extension('./models/benchmark','png')
+delete_files_with_extension('./static/uploads/benchmark','png')

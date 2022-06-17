@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,17 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: '3.8'
+          
+      - name: Set Up Environment Variables
+        env:
+            OUTLOOK_EMAIL: ${{ secrets.OUTLOOK_EMAIL_ID }}
+            OUTLOOK_PASSWORD: ${{ secrets.OUTLOOK_EMAIL_PASSWORD }}
+            GMAIL_EMAIL: ${{ secrets.GMAIL_EMAIL_ID }}
+            GMAIL_PASSWORD: ${{ secrets.GMAIL_EMAIL_PASSWORD }}
 
+      - name: Install Metadata Dependency
+        run: sudo apt-get install -y libmediainfo-dev
+        
       - name: Create and start virtual environment
         run: |
           python -m venv venv
@@ -41,7 +51,7 @@ jobs:
             !venv/
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     environment:
       name: 'Production'

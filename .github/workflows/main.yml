@@ -42,6 +42,6 @@ jobs:
             GMAIL_EMAIL: ${{secrets.GMAIL_EMAIL_ID}}
             GMAIL_PASSWORD: ${{secrets.GMAIL_EMAIL_PASSWORD}}
         run: |
-          echo "${OUTLOOK_EMAIL}"
+          echo "${{secrets.OUTLOOK_EMAIL_ID}}"
           echo "${OUTLOOK_PASSWORD}"
 

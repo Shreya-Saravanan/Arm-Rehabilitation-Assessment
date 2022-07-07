@@ -14,34 +14,87 @@ from pymediainfo import MediaInfo
 import MailingService
 
 
-def convert_to_dict(filename:str):
-    """Convert a CSV file to a list of Python Dictionaries.
+EXERCISE_WEBPAGE = {
+    "Arm_Placed_in_the_Front.html": {
+        "Exercise_Number": "1",
+        "Exercise_Webpage": "Arm_Placed_in_the_Front.html",
+        "Exercise_Title": "Arm Placed in the Front",
+        "Instructions": "1.md",
+        "Image": "1.png",
+        "Exercise_Image": "I1.png",
+        "Exercise_Models": "Exercise 1 - Arm Placed in the Front.h5"
+    },
 
-    Args:
-        - filename (str): CSV Filename to be read.
+    "Arm_Placed_on_its_Side.html": {
+        "Exercise_Number": "2",
+        "Exercise_Webpage": "Arm_Placed_on_its_Side.html",
+        "Exercise_Title": "Arm Placed on its Side",
+        "Instructions": "2.md",
+        "Image": "2.png",
+        "Exercise_Image": "I2.png",
+        "Exercise_Models": "Exercise 2 - Arm Placed on its Side.h5"
+    },
 
-    Returns:
-        - Exercise (dict): Returns Key-Value Pair of the Exercise details to be loaded by the Web Server.
-    """
-    # Open a CSV file - note - must have column headings in top row
-    datafile = open(filename, newline='')
+    "Extending_the_Elbow_1.html": {
+        "Exercise_Number": "3",
+        "Exercise_Webpage": "Extending_the_Elbow_1.html",
+        "Exercise_Title": "Extending the Elbow - 1",
+        "Instructions": "3.md",
+        "Image": "3.png",
+        "Exercise_Image": "I3.png",
+        "Exercise_Models": "Exercise 3 - Extending the Elbow_1.h5"
+    },
 
-    # Create DictReader object
-    my_reader = csv.DictReader(datafile)
+    "Extending_the_Elbow_2.html": {
+        "Exercise_Number": "4",
+        "Exercise_Webpage": "Extending_the_Elbow_2.html",
+        "Exercise_Title": "Extending the Elbow - 2",
+        "Instructions": "4.md",
+        "Image": "4.png",
+        "Exercise_Image": "I4.png",
+        "Exercise_Models": "Exercise 4 - Extending the Elbow_2.h5"
+    },
 
-    # Create a regular Python list containing dicts
-    list_of_dicts = list(my_reader)
+    "Turning_the_Forearm.html": {
+        "Exercise_Number": "5",
+        "Exercise_Webpage": "Turning_the_Forearm.html",
+        "Exercise_Title": "Turning the Forearm",
+        "Instructions": "5.md",
+        "Image": "5.png",
+        "Exercise_Image": "I5.png",
+        "Exercise_Models": "Exercise 5 - Turning the Forearm.h5"
+    },
 
-    # Obtain the Exercise Webpages as an Index Parameter
-    webpage_dict = dict()
+    "Extending_the_Wrist.html": {
+        "Exercise_Number": "6",
+        "Exercise_Webpage": "Extending_the_Wrist.html",
+        "Exercise_Title": "Extending the Wrist",
+        "Instructions": "6.md",
+        "Image": "6.png",
+        "Exercise_Image": "I6.png",
+        "Exercise_Models": "Exercise 6 - Extending the Wrist.h5"
+    },
 
-    for i in list_of_dicts:
-        webpage_dict[i['Exercise_Webpage']] = i
-    # Close original csv file
-    datafile.close()
+    "Extending_the_Fingers.html": {
+        "Exercise_Number": "7",
+        "Exercise_Webpage": "Extending_the_Fingers.html",
+        "Exercise_Title": "Extending the Fingers",
+        "Instructions": "7.md",
+        "Image": "7.png",
+        "Exercise_Image": "I7.png",
+        "Exercise_Models": "Exercise 7 - Extending the Fingers.h5"
+    },
 
-    # Return the list
-    return webpage_dict
+    "Extending_the_Thumb.html": {
+        "Exercise_Number": "8",
+        "Exercise_Webpage": "Extending_the_Thumb.html",
+        "Exercise_Title": "Extending the Thumb",
+        "Instructions": "8.md",
+        "Image": "8.png",
+        "Exercise_Image": "I8.png",
+        "Exercise_Models": "Exercise 8 - Extending the Thumb.h5"
+    }
+}
 
 
 def Delete_File(upload_path:str, filename:str):
@@ -304,8 +357,6 @@ recipient_email = ''
 Markdown(app)
 
 
-exercise_list = convert_to_dict("Exercises.csv")
-
 @app.route('/display/About.html', methods=['GET'])
 def About():
     return render_template('About.html')
@@ -323,7 +374,7 @@ def Exercise(Exercise_Webpage):
     print(f'Webpage GET: {Exercise_Webpage}')
     
     try:
-        exercise_dict:dict = exercise_list[Exercise_Webpage]
+        exercise_dict:dict = EXERCISE_WEBPAGE[Exercise_Webpage]
 
     except:
         return render_template('Error_404.html')
